@@ -1,15 +1,15 @@
-package com.gwu.cs6431.service.message;
+package com.gwu.cs6431.service.message.content;
 
-class HeaderField<K, V> {
-    private K key;
+public class HeaderField<V> {
+    private Header key;
     private V value;
 
-    public HeaderField(K key, V value) {
+    public HeaderField(Header key, V value) {
         this.key = key;
         this.value = value;
     }
 
-    public K getKey() {
+    public Header getKey() {
         return key;
     }
 

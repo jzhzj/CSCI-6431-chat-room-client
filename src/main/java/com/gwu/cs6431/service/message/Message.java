@@ -1,34 +1,24 @@
 package com.gwu.cs6431.service.message;
 
+import com.gwu.cs6431.service.message.content.*;
+
 public class Message {
     private final static String EOM = "\0";
     private final static String newLine = "\r\n";
     private StartLine startLine;
-    private HeaderField<Header, Status> status;
-    private HeaderField<Header, String> userID;
-    private HeaderField<Header, String> passwd;
-    private HeaderField<Header, String> sourceUser;
-    private HeaderField<Header, String> targetUser;
-    private HeaderField<Header, String> sessionID;
+    private HeaderField<Status> status;
+    private HeaderField<String> userID;
+    private HeaderField<String> passwd;
+    private HeaderField<String> sourceUser;
+    private HeaderField<String> targetUser;
+    private HeaderField<String> sessionID;
     private String txt;
-
-    enum Status {
-        Successful, Failed, Accepted, Refused
-    }
-
-    enum StartLine {
-        REG, SIGN, INVT, RSP, TXT, CLOSE, QUIT
-    }
-
-    enum Header {
-        Status, UserID, Password, SourceUser, TargetUser, SessionID
-    }
 
     private Message() {
 
     }
 
-    public Message(String startLine) {
+    public Message(StartLine startLine) {
         setStartLine(startLine);
     }
 
@@ -44,7 +34,11 @@ public class Message {
         }
     }
 
-    public void setStatus(String status) {
+    public void setStartLine(StartLine startLine) {
+        this.startLine = startLine;
+    }
+
+    private void setStatus(String status) {
         for (Status st : Status.values()) {
             if (status.equalsIgnoreCase(st.name())) {
                 this.status = new HeaderField<>(Header.Status, st);
@@ -54,6 +48,10 @@ public class Message {
         if (status == null) {
             // TODO exception
         }
+    }
+
+    public void setStatus(Status status) {
+        this.status = new HeaderField<>(Header.Status, status);
     }
 
     public void setUserID(String userID) {
@@ -108,6 +106,38 @@ public class Message {
             default:
                 // TODO exception
         }
+    }
+
+    public StartLine getStartLine() {
+        return startLine;
+    }
+
+    public Status getStatus() {
+        return status.getValue();
+    }
+
+    public String getUserID() {
+        return userID.getValue();
+    }
+
+    public String getPasswd() {
+        return passwd.getValue();
+    }
+
+    public String getSourceUser() {
+        return sourceUser.getValue();
+    }
+
+    public String getTargetUser() {
+        return targetUser.getValue();
+    }
+
+    public String getSessionID() {
+        return sessionID.getValue();
+    }
+
+    public String getTxt() {
+        return txt;
     }
 
     public static Message genMessage(String message) {
