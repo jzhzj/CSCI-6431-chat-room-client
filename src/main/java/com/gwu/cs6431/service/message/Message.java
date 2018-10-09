@@ -170,10 +170,10 @@ public class Message {
             sb.append(newLine);
         }
         sb.append(newLine);
-        if (txt != null) {
+        if (txt != null && !txt.equals("")) {
             sb.append(txt);
+            sb.append(newLine);
         }
-        sb.append(newLine);
         sb.append(EOM);
         return sb.toString();
     }
