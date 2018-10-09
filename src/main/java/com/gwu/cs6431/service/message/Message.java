@@ -32,7 +32,7 @@ public class Message {
         setStartLine(startLine);
     }
 
-    public void setStartLine(String startLine) {
+    private void setStartLine(String startLine) {
         for (StartLine sl : StartLine.values()) {
             if (startLine.equalsIgnoreCase(sl.name())) {
                 this.startLine = sl;
@@ -80,7 +80,7 @@ public class Message {
         this.txt = txt;
     }
 
-    public void setHeader(String line) {
+    private void setHeader(String line) {
         String[] elements = line.split("=");
         if (elements.length != 2) {
             // TODO exception
@@ -100,10 +100,10 @@ public class Message {
                 setSourceUser(elements[1]);
                 break;
             case "TargetUser":
-                setTargetUser(elements[0]);
+                setTargetUser(elements[1]);
                 break;
             case "SessionID":
-                setSessionID(elements[0]);
+                setSessionID(elements[1]);
                 break;
             default:
                 // TODO exception
@@ -118,7 +118,7 @@ public class Message {
 
         // set Header fields
         int i = 1;
-        for (; i < lines.length && !lines[i].equals(EOM); i++) {
+        for (; i < lines.length && !lines[i].equals(""); i++) {
             res.setHeader(lines[i]);
         }
 
@@ -140,25 +140,41 @@ public class Message {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(startLine == null ? "" : startLine);
-        sb.append(newLine);
+        if (startLine != null) {
+            sb.append(startLine);
+            sb.append(newLine);
+        }
 //        Status, UserID, Password, SourceUser, TargetUser, SessionID
-        sb.append(status == null ? "" : status);
+        if (status != null) {
+            sb.append(status);
+            sb.append(newLine);
+        }
+        if (userID != null) {
+            sb.append(userID);
+            sb.append(newLine);
+        }
+        if (passwd != null) {
+            sb.append(passwd);
+            sb.append(newLine);
+        }
+        if (sourceUser != null) {
+            sb.append(sourceUser);
+            sb.append(newLine);
+        }
+        if (targetUser != null) {
+            sb.append(targetUser);
+            sb.append(newLine);
+        }
+        if (sessionID != null) {
+            sb.append(sessionID);
+            sb.append(newLine);
+        }
         sb.append(newLine);
-        sb.append(userID == null ? "" : userID);
+        if (txt != null) {
+            sb.append(txt);
+        }
         sb.append(newLine);
-        sb.append(passwd == null ? "" : passwd);
-        sb.append(newLine);
-        sb.append(sourceUser == null ? "" : sourceUser);
-        sb.append(newLine);
-        sb.append(targetUser == null ? "" : targetUser);
-        sb.append(newLine);
-        sb.append(sessionID == null ? "" : sessionID);
-        sb.append(newLine);
-        sb.append(newLine);
-        sb.append(txt == null ? "" : txt);
         sb.append(EOM);
-
         return sb.toString();
     }
 }
