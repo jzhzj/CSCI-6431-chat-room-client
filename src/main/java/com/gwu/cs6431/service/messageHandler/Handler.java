@@ -7,5 +7,6 @@ import java.net.Socket;
 abstract class Handler {
     // Status, UserID, Password, SourceUser, TargetUser, SessionID
     Message msg;
+    Message reply;
     Socket socket;
 }

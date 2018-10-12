@@ -1,5 +1,6 @@
 package com.gwu.cs6431.service.message;
 
+import com.gwu.cs6431.service.exception.CanNotResolveException;
 import com.gwu.cs6431.service.message.content.*;
 
 public class Message {
@@ -22,7 +23,7 @@ public class Message {
         setStartLine(startLine);
     }
 
-    private void setStartLine(String startLine) {
+    private void setStartLine(String startLine) throws CanNotResolveException{
         for (StartLine sl : StartLine.values()) {
             if (startLine.equalsIgnoreCase(sl.name())) {
                 this.startLine = sl;
@@ -30,7 +31,7 @@ public class Message {
             }
         }
         if (startLine == null) {
-            // TODO exception
+            throw new CanNotResolveException("Wrong Start Line!");
         }
     }
 
@@ -38,7 +39,7 @@ public class Message {
         this.startLine = startLine;
     }
 
-    private void setStatus(String status) {
+    private void setStatus(String status) throws CanNotResolveException{
         for (Status st : Status.values()) {
             if (status.equalsIgnoreCase(st.name())) {
                 this.status = new HeaderField<>(Header.Status, st);
@@ -46,7 +47,7 @@ public class Message {
             }
         }
         if (status == null) {
-            // TODO exception
+            throw new CanNotResolveException("Wrong Status!");
         }
     }
 
@@ -78,10 +79,10 @@ public class Message {
         this.txt = txt;
     }
 
-    private void setHeader(String line) {
+    private void setHeader(String line) throws CanNotResolveException{
         String[] elements = line.split("=");
         if (elements.length != 2) {
-            // TODO exception
+            throw new CanNotResolveException("Wrong Header!");
         }
         // Status, UserID, Password, SourceUser, TargetUser, SessionID
         switch (elements[0]) {
@@ -104,7 +105,7 @@ public class Message {
                 setSessionID(elements[1]);
                 break;
             default:
-                // TODO exception
+                throw new CanNotResolveException("Wrong Header!");
         }
     }
 
@@ -141,15 +142,26 @@ public class Message {
     }
 
     public static Message genMessage(String message) {
+        if (message == null)
+            return null;
         Message res = new Message();
         String[] lines = message.split("\\r\\n");
         // set Start line
-        res.setStartLine(lines[0]);
+        try {
+            res.setStartLine(lines[0]);
+        }catch (CanNotResolveException e) {
+            return null;
+        }
 
         // set Header fields
         int i = 1;
-        for (; i < lines.length && !lines[i].equals(""); i++) {
-            res.setHeader(lines[i]);
+        try {
+            for (; i < lines.length && !lines[i].equals(""); i++) {
+                res.setHeader(lines[i]);
+            }
+
+        } catch (CanNotResolveException e) {
+            return null;
         }
 
         // skip the line that only has <CRLF>
