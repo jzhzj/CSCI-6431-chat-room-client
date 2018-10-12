@@ -1,7 +1,6 @@
 package com.gwu.cs6431.service.io.listener;
 
 import com.gwu.cs6431.service.message.Message;
-import com.gwu.cs6431.service.message.content.StartLine;
 
 public class Task implements Runnable {
     String messageStr;
@@ -14,7 +13,7 @@ public class Task implements Runnable {
     @Override
     public void run() {
         msg = Message.genMessage(messageStr);
-        if (msg.getStartLine() != StartLine.INVT)
+        if (msg.getStartLine() != Message.StartLine.INVT)
             return;
         handle();
     }

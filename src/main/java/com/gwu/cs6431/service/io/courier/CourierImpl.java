@@ -23,6 +23,7 @@ public class CourierImpl implements Courier {
      * */
     @Override
     public Message execute(Message msg) {
+        System.out.println(msg);
         StringBuilder sb;
         try {
             out = new PrintWriter(socket.getOutputStream(), true);

@@ -2,6 +2,7 @@ package com.gwu.cs6431.gui;
 
 import com.gwu.cs6431.service.constant.ClientProps;
 import com.gwu.cs6431.service.messageHandler.Executable;
+import com.gwu.cs6431.service.messageHandler.RegHandler;
 import com.gwu.cs6431.service.messageHandler.SignHandler;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -33,41 +34,59 @@ public class InitController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         signInButton.setOnAction(event -> {
-//            Socket socket;
-//            try {
-//                socket = new Socket(ClientProps.SERVER_ADDRESS, ClientProps.SERVER_PORT);
-//            } catch (IOException e) {
-//                // TODO prompt alert
-//                Stage stage = (Stage) signInButton.getScene().getWindow();
-//                stage.close();
-//                return;
-//            }
-
+//            Socket socket = newSocket();
 
             // In order to test code, do not pass a socket connected with the server
             // Instead, new a socket
             Executable signHandler = new SignHandler(new Socket(), userIdTxt.getText(), passwdTxt.getText());
             if (signHandler.execute()) {
-                Stage initStage = (Stage) signInButton.getScene().getWindow();
-                initStage.close();
-                try {
-                    Parent root = FXMLLoader.load(getClass().getResource("/com/gwu/cs6431/gui/Main.fxml"));
-                    Stage stage = new Stage();
-                    stage.setScene(new Scene(root));
-                    stage.show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                changeStage();
+            } else {
+                // TODO prompt information, Failed
+                System.out.println("sign in failed");
             }
         });
 
         signUpButton.setOnAction(event -> {
-            // TODO
+//            Socket socket = newSocket();
+
+            // In order to test code, do not pass a socket connected with the server
+            // Instead, new a socket
+            Executable regHandler = new RegHandler(new Socket(), userIdTxt.getText(), passwdTxt.getText());
+            if (regHandler.execute()) {
+                // TODO prompt information, Successful
+
+                changeStage();
+            } else {
+                // TODO prompt information, Failed
+            }
         });
 
-        cancelButton.setOnAction(event -> {
+        cancelButton.setOnAction(event -> Platform.exit());
+    }
+
+    private void changeStage() {
+        Stage initStage = (Stage) signInButton.getScene().getWindow();
+        initStage.close();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/com/gwu/cs6431/gui/Main.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Socket newSocket() {
+        Socket socket;
+        try {
+            socket = new Socket(ClientProps.SERVER_ADDRESS, ClientProps.SERVER_PORT);
+        } catch (IOException e) {
+            // TODO prompt alert
             Platform.exit();
-        });
+            return null;
+        }
+        return socket;
     }
 }

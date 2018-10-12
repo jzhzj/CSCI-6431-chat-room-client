@@ -2,8 +2,6 @@ package com.gwu.cs6431.service.messageHandler;
 
 import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
-import com.gwu.cs6431.service.message.content.StartLine;
-import com.gwu.cs6431.service.message.content.Status;
 
 import java.net.Socket;
 import java.util.concurrent.Callable;
@@ -12,7 +10,7 @@ public class InvtHandler extends Handler implements Callable<Boolean> {
 
     public InvtHandler(Socket socket, String sourceUser, String targetUser) {
         this.socket = socket;
-        Message msg = new Message(StartLine.INVT);
+        Message msg = new Message(Message.StartLine.INVT);
         msg.setSourceUser(sourceUser);
         msg.setTargetUser(targetUser);
         this.msg = msg;
@@ -28,6 +26,6 @@ public class InvtHandler extends Handler implements Callable<Boolean> {
         reply = new CourierImpl(socket).execute(msg);
         if (reply == null)
             return false;
-        return reply.getStartLine() == StartLine.RSP && reply.getStatus() == Status.Successful;
+        return reply.getStartLine() == Message.StartLine.RSP && reply.getStatus() == Message.Status.Successful;
     }
 }

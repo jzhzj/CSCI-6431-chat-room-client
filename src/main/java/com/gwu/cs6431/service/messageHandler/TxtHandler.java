@@ -3,7 +3,6 @@ package com.gwu.cs6431.service.messageHandler;
 import com.gwu.cs6431.service.io.courier.Courier;
 import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
-import com.gwu.cs6431.service.message.content.StartLine;
 
 import java.net.Socket;
 
@@ -23,7 +22,7 @@ public class TxtHandler extends Handler implements Sendable {
     }
 
     public void send(String txt) {
-        msg = new Message(StartLine.TXT);
+        msg = new Message(Message.StartLine.TXT);
         msg.setTxt(txt);
         send();
         msg = null;
