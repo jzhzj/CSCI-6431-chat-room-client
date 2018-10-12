@@ -13,4 +13,7 @@ public class ClientProps {
     public static final String SERVER_ADDRESS;
     public static final int SERVER_PORT;
     public static final int CLIENT_PORT;
+
+    public static final String EOM = "\0";
+    public static final String NEW_LINE = "\r\n";
 }

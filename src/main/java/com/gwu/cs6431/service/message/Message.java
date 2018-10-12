@@ -1,10 +1,12 @@
 package com.gwu.cs6431.service.message;
 
+import com.gwu.cs6431.service.constant.ClientProps;
 import com.gwu.cs6431.service.exception.CanNotResolveException;
 
 public class Message {
-    private final static String EOM = "\0";
-    private final static String newLine = "\r\n";
+    private final static String EOM = ClientProps.EOM;
+    private final static String NEW_LINE = ClientProps.NEW_LINE;
+
     private StartLine startLine;
     private HeaderField<Status> status;
     private HeaderField<String> userID;
@@ -207,7 +209,7 @@ public class Message {
             sb.append(lines[i]);
             if (lines[i + 1].equals(EOM))
                 break;
-            sb.append(newLine);
+            sb.append(NEW_LINE);
         }
         res.setTxt(sb.toString());
         return res;
@@ -218,37 +220,37 @@ public class Message {
         StringBuilder sb = new StringBuilder();
         if (startLine != null) {
             sb.append(startLine);
-            sb.append(newLine);
+            sb.append(NEW_LINE);
         }
 //        Status, UserID, Password, SourceUser, TargetUser, SessionID
         if (status != null) {
             sb.append(status);
-            sb.append(newLine);
+            sb.append(NEW_LINE);
         }
         if (userID != null) {
             sb.append(userID);
-            sb.append(newLine);
+            sb.append(NEW_LINE);
         }
         if (passwd != null) {
             sb.append(passwd);
-            sb.append(newLine);
+            sb.append(NEW_LINE);
         }
         if (sourceUser != null) {
             sb.append(sourceUser);
-            sb.append(newLine);
+            sb.append(NEW_LINE);
         }
         if (targetUser != null) {
             sb.append(targetUser);
-            sb.append(newLine);
+            sb.append(NEW_LINE);
         }
         if (sessionID != null) {
             sb.append(sessionID);
-            sb.append(newLine);
+            sb.append(NEW_LINE);
         }
-        sb.append(newLine);
+        sb.append(NEW_LINE);
         if (txt != null && !txt.equals("")) {
             sb.append(txt);
-            sb.append(newLine);
+            sb.append(NEW_LINE);
         }
         sb.append(EOM);
         return sb.toString();

@@ -1,13 +1,14 @@
 package com.gwu.cs6431.service.io.courier;
 
+import com.gwu.cs6431.service.constant.ClientProps;
 import com.gwu.cs6431.service.message.Message;
 
 import java.io.*;
 import java.net.Socket;
 
 public class CourierImpl implements Courier {
-    private static final String EOM = "\0";
-    private static final String NEW_LINE = "\r\n";
+    private static final String EOM = ClientProps.EOM;
+    private static final String NEW_LINE = ClientProps.NEW_LINE;
     private Socket socket;
     private PrintWriter out;
 

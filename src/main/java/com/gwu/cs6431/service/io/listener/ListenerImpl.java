@@ -21,8 +21,8 @@ public class ListenerImpl implements Listener {
     private ListenerImpl() {
     }
 
-    private static final String EOM = "\0";
-    private static final String newLine = "\r\n";
+    private static final String EOM = ClientProps.EOM;
+    private static final String NEW_LINE = ClientProps.NEW_LINE;
     private int STAT = 0;
     private int IDLE = 0;
     private int WORKING = 1;
@@ -43,7 +43,7 @@ public class ListenerImpl implements Listener {
                 String line;
                 while (!(line = in.readLine()).equals(EOM)) {
                     sb.append(line);
-                    sb.append(newLine);
+                    sb.append(NEW_LINE);
                 }
                 sb.append(EOM);
                 es.execute(new Task(sb.toString()));
