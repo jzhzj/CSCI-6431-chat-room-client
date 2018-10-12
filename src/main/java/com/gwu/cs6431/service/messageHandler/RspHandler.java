@@ -1,5 +1,6 @@
 package com.gwu.cs6431.service.messageHandler;
 
+import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
 import com.gwu.cs6431.service.message.content.StartLine;
 import com.gwu.cs6431.service.message.content.Status;
@@ -20,7 +21,10 @@ public class RspHandler extends Handler implements Executable, Sendable {
         if (msg.getStatus() == null)
             return accept();
         // TODO DO NOT CLOSE socket since it will be use for Session
-        return false;
+        reply = new CourierImpl(socket).execute(msg);
+        if (reply == null)
+            return false;
+        return reply.getStartLine() == StartLine.RSP && reply.getStatus() == Status.Successful;
     }
 
     @Override

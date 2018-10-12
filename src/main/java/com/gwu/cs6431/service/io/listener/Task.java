@@ -1,16 +1,25 @@
 package com.gwu.cs6431.service.io.listener;
 
-import java.net.Socket;
+import com.gwu.cs6431.service.message.Message;
+import com.gwu.cs6431.service.message.content.StartLine;
 
 public class Task implements Runnable {
-    Socket socket;
+    String messageStr;
+    Message msg;
 
-    public Task(Socket socket) {
-        this.socket = socket;
+    public Task(String messageStr) {
+        this.messageStr = messageStr;
     }
 
     @Override
     public void run() {
+        msg = Message.genMessage(messageStr);
+        if (msg.getStartLine() != StartLine.INVT)
+            return;
+        handle();
+    }
 
+    private void handle() {
+        // TODO prompt invitation in GUI
     }
 }
