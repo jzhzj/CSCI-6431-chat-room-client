@@ -1,3 +1,6 @@
+# Mac layout file
+.DS_Store
+
 # Build output
 /target
 
