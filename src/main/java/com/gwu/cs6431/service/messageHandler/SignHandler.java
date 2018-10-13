@@ -16,11 +16,18 @@ public class SignHandler extends Handler implements Executable {
 
     @Override
     public boolean execute() {
-        System.out.println("SignHandler::Execute");
+        System.out.println(msg);
         reply = new CourierImpl(socket).execute(msg);
-        System.out.println("got reply");
         if (reply == null)
             return false;
         return reply.getStartLine() == Message.StartLine.SIGN && reply.getStatus() == Message.Status.Successful;
+    }
+
+    @Override
+    public String getServerFeedback() {
+        if (reply == null)
+            return "Failed";
+        else
+            return reply.getTxt();
     }
 }

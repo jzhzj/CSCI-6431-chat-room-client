@@ -3,6 +3,7 @@ package com.gwu.cs6431.service.messageHandler;
 import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
 
+import java.io.IOException;
 import java.net.Socket;
 
 public class QuitHandler extends Handler implements Sendable {
@@ -16,6 +17,10 @@ public class QuitHandler extends Handler implements Sendable {
 
     @Override
     public void send() {
-        new CourierImpl(socket).send(msg);
+        try {
+            new CourierImpl(socket).send(msg);
+        } catch (IOException e) {
+            // TODO
+        }
     }
 }

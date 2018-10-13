@@ -3,6 +3,7 @@ package com.gwu.cs6431.service.messageHandler;
 import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
 
+import java.io.IOException;
 import java.net.Socket;
 
 public class RspHandler extends Handler implements Executable, Sendable {
@@ -29,6 +30,19 @@ public class RspHandler extends Handler implements Executable, Sendable {
     public void send() {
         if (msg.getStatus() == null)
             refuse();
+        try {
+            new CourierImpl(socket).send(msg);
+        } catch (IOException e) {
+            // TODO
+        }
+    }
+
+    @Override
+    public String getServerFeedback() {
+        if (reply == null)
+            return "Failed";
+        else
+            return reply.getTxt();
     }
 
     public boolean accept() {

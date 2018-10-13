@@ -5,4 +5,6 @@ package com.gwu.cs6431.service.messageHandler;
  */
 public interface Executable {
     boolean execute();
+
+    String getServerFeedback();
 }

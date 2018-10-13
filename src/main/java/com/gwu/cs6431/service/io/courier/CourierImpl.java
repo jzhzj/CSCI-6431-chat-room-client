@@ -19,12 +19,11 @@ public class CourierImpl implements Courier {
     /**
      * Sends a message to the server. Returns a Message object from the server.
      * If failed to get a message, returns null.
-     *
+     * <p>
      * TODO add timer
-     * */
+     */
     @Override
     public Message execute(Message msg) {
-        System.out.println(msg);
         StringBuilder sb;
         try {
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -46,12 +45,8 @@ public class CourierImpl implements Courier {
     }
 
     @Override
-    public void send(Message msg) {
-        try {
-            out = new PrintWriter(socket.getOutputStream(), true);
-            out.print(msg.toString());
-        } catch (IOException e) {
-
-        }
+    public void send(Message msg) throws IOException{
+        out = new PrintWriter(socket.getOutputStream(), true);
+        out.print(msg.toString());
     }
 }

@@ -4,6 +4,7 @@ import com.gwu.cs6431.service.io.courier.Courier;
 import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
 
+import java.io.IOException;
 import java.net.Socket;
 
 public class TxtHandler extends Handler implements Sendable {
@@ -17,8 +18,12 @@ public class TxtHandler extends Handler implements Sendable {
     @Override
     public void send() {
         if (msg == null)
-            throw new RuntimeException("Do Not send nothing! TxtHandler::send()");
-        courier.send(msg);
+            return;
+        try {
+            courier.send(msg);
+        } catch (IOException e) {
+            // TODO
+        }
     }
 
     public void send(String txt) {

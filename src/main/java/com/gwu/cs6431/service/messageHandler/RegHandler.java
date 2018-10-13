@@ -6,7 +6,6 @@ import com.gwu.cs6431.service.message.Message;
 import java.net.Socket;
 
 public class RegHandler extends Handler implements Executable {
-
     public RegHandler(Socket socket, String userID, String passwd) {
         this.socket = socket;
         Message msg = new Message(Message.StartLine.REG);
@@ -21,5 +20,13 @@ public class RegHandler extends Handler implements Executable {
         if (reply == null)
             return false;
         return reply.getStartLine() == Message.StartLine.REG && reply.getStatus() == Message.Status.Successful;
+    }
+
+    @Override
+    public String getServerFeedback() {
+        if (reply == null)
+            return "Failed";
+        else
+            return reply.getTxt();
     }
 }
