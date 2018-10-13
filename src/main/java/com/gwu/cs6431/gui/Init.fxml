@@ -4,6 +4,7 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="447.0" prefWidth="288.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gwu.cs6431.gui.InitController">
@@ -12,11 +13,26 @@
          <children>
             <TextField fx:id="userIdTxt" layoutX="61.0" layoutY="141.0" />
             <PasswordField fx:id="passwd" layoutX="61.0" layoutY="195.0" />
-            <Button fx:id="signInButton" layoutX="61.0" layoutY="296.0" mnemonicParsing="false" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" prefHeight="27.0" prefWidth="167.0" style="-fx-background-color: #80b0ff;" text="Sign in" />
-            <Button fx:id="signUpButton" layoutX="61.0" layoutY="334.0" mnemonicParsing="false" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" prefHeight="27.0" prefWidth="167.0" style="-fx-background-color: #60bb77;" text="Sign up" />
-            <Button fx:id="cancelButton" layoutX="61.0" layoutY="372.0" mnemonicParsing="false" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" prefHeight="27.0" prefWidth="167.0" style="-fx-background-insets: 0;" text="Cancel" />
-            <Text layoutX="61.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User ID" />
-            <Text layoutX="61.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
+            <Button fx:id="signInButton" layoutX="61.0" layoutY="296.0" mnemonicParsing="false" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" prefHeight="27.0" prefWidth="167.0" style="-fx-background-color: #80b0ff;" text="Sign in">
+               <font>
+                  <Font name="Optima Regular" size="13.0" />
+               </font></Button>
+            <Button fx:id="signUpButton" layoutX="61.0" layoutY="334.0" mnemonicParsing="false" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" prefHeight="27.0" prefWidth="167.0" style="-fx-background-color: #60bb77;" text="Sign up">
+               <font>
+                  <Font name="Optima Regular" size="13.0" />
+               </font></Button>
+            <Button fx:id="cancelButton" layoutX="61.0" layoutY="372.0" mnemonicParsing="false" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" prefHeight="27.0" prefWidth="167.0" style="-fx-background-insets: 0; -fx-background-color: #F8F8FF00;" text="Cancel" textFill="#1d96e8">
+               <font>
+                  <Font name="Optima Regular" size="13.0" />
+               </font></Button>
+            <Text layoutX="61.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User ID">
+               <font>
+                  <Font name="Optima Regular" size="13.0" />
+               </font></Text>
+            <Text layoutX="61.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
+               <font>
+                  <Font name="Optima Regular" size="13.0" />
+               </font></Text>
          </children>
       </AnchorPane>
    </children>
