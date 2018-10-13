@@ -1,7 +1,6 @@
 package com.gwu.cs6431.gui;
 
 import com.gwu.cs6431.service.constant.ClientProps;
-import com.gwu.cs6431.service.messageHandler.Executable;
 import com.gwu.cs6431.service.messageHandler.RegHandler;
 import com.gwu.cs6431.service.messageHandler.SignHandler;
 import javafx.application.Platform;
@@ -14,6 +13,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -50,8 +52,8 @@ public class InitController implements Initializable {
             if (!checkAccount(userIdTxt.getText(), passwd.getText())) {
                 prompt(Alert.AlertType.ERROR, "Wrong Format!"
                         , "You can only use letters and numbers as your User ID and Password."
-                        , "User ID should starts with a letter. The length should between 5 to 10." + System.lineSeparator()
-                                + "The length of Password should be between 6 to 13.");
+                        , "User ID should starts with a letter. The length should between 5 and 10." + System.lineSeparator()
+                                + "The length of Password should be between 6 and 13.");
                 return;
             }
             Socket socket = newSocket();
@@ -70,7 +72,10 @@ public class InitController implements Initializable {
     }
 
     private boolean checkAccount(String id, String pd) {
+        // User ID should starts with a letter, followed by letters or numbers.
+        // Length should be between 5 and 10.
         String idRegex = "^[a-zA-Z][\\w]{4,9}";
+        // Length should be between 6 and 13.
         String pdRegex = "[a-zA-Z\\d]{6,13}";
         return id.matches(idRegex) && pd.matches(pdRegex);
     }
@@ -107,5 +112,29 @@ public class InitController implements Initializable {
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleMouseEntered(MouseEvent mouseEvent) {
+        Button btn = (Button) mouseEvent.getSource();
+        btn.setEffect(new DropShadow());
+    }
+
+    @FXML
+    private void handleMouseExited(MouseEvent mouseEvent) {
+        Button btn = (Button) mouseEvent.getSource();
+        btn.setEffect(null);
+    }
+
+    @FXML
+    private void handleMousePressed(MouseEvent mouseEvent) {
+        Button btn = (Button) mouseEvent.getSource();
+        btn.setEffect(new InnerShadow());
+    }
+
+    @FXML
+    private void handleMouseReleased(MouseEvent mouseEvent) {
+        Button btn = (Button) mouseEvent.getSource();
+        btn.setEffect(new DropShadow());
     }
 }
