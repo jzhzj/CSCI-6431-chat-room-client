@@ -10,7 +10,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -29,40 +31,48 @@ public class InitController implements Initializable {
     @FXML
     private TextField userIdTxt;
     @FXML
-    private TextField passwdTxt;
+    private PasswordField passwd;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         signInButton.setOnAction(event -> {
-//            Socket socket = newSocket();
-
-            // In order to test code, do not pass a socket connected with the server
-            // Instead, new a socket
-            Executable signHandler = new SignHandler(new Socket(), userIdTxt.getText(), passwdTxt.getText());
+            Socket socket = newSocket();
+            SignHandler signHandler = new SignHandler(socket, userIdTxt.getText(), passwd.getText());
             if (signHandler.execute()) {
                 changeStage();
             } else {
-                // TODO prompt information, Failed
-                System.out.println("sign in failed");
+                prompt(Alert.AlertType.ERROR, "Failed", signHandler.getServerFeedback(), "Please try again.");
             }
+            signHandler.close();
         });
 
         signUpButton.setOnAction(event -> {
-//            Socket socket = newSocket();
-
-            // In order to test code, do not pass a socket connected with the server
-            // Instead, new a socket
-            Executable regHandler = new RegHandler(new Socket(), userIdTxt.getText(), passwdTxt.getText());
+            if (!checkAccount(userIdTxt.getText(), passwd.getText())) {
+                prompt(Alert.AlertType.ERROR, "Wrong Format!"
+                        , "You can only use letters and numbers as your User ID and Password."
+                        , "User ID should starts with a letter. The length should between 5 to 10." + System.lineSeparator()
+                                + "The length of Password should be between 6 to 13.");
+                return;
+            }
+            Socket socket = newSocket();
+            RegHandler regHandler = new RegHandler(socket, userIdTxt.getText(), passwd.getText());
             if (regHandler.execute()) {
-                // TODO prompt information, Successful
-
+                prompt(Alert.AlertType.INFORMATION, "Success!", regHandler.getServerFeedback()
+                        , "Please remember your User ID and Password :)");
                 changeStage();
             } else {
-                // TODO prompt information, Failed
+                prompt(Alert.AlertType.ERROR, "Failed", regHandler.getServerFeedback(), "Please try again.");
             }
+            regHandler.close();
         });
 
         cancelButton.setOnAction(event -> Platform.exit());
+    }
+
+    private boolean checkAccount(String id, String pd) {
+        String idRegex = "^[a-zA-Z][\\w]{4,9}";
+        String pdRegex = "[a-zA-Z\\d]{6,13}";
+        return id.matches(idRegex) && pd.matches(pdRegex);
     }
 
     private void changeStage() {
@@ -83,10 +93,19 @@ public class InitController implements Initializable {
         try {
             socket = new Socket(ClientProps.SERVER_ADDRESS, ClientProps.SERVER_PORT);
         } catch (IOException e) {
-            // TODO prompt alert
+            prompt(Alert.AlertType.ERROR, "Connection Error!"
+                    , "Can not connect to server", "Please check your network.");
             Platform.exit();
             return null;
         }
         return socket;
+    }
+
+    public static void prompt(Alert.AlertType alertType, String title, String headerText, String contentText) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        alert.showAndWait();
     }
 }
