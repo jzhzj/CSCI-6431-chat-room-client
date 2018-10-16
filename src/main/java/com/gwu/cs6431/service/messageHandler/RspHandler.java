@@ -23,7 +23,7 @@ public class RspHandler extends Handler implements Executable, Sendable {
         reply = new CourierImpl(socket).execute(msg);
         if (reply == null)
             return false;
-        return reply.getStartLine() == Message.StartLine.RSP && reply.getStatus() == Message.Status.Successful;
+        return reply.getStartLine().equals(Message.StartLine.RSP) && reply.getStatus().equals(Message.Status.Successful);
     }
 
     @Override

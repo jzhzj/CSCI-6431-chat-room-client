@@ -16,4 +16,5 @@ public class ClientProps {
 
     public static final String EOM = "\0";
     public static final String NEW_LINE = "\r\n";
+    public static final int TIME_OUT = 1000;
 }

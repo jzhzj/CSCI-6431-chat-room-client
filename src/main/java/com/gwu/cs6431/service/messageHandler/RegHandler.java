@@ -19,7 +19,7 @@ public class RegHandler extends Handler implements Executable {
         reply = new CourierImpl(socket).execute(msg);
         if (reply == null)
             return false;
-        return reply.getStartLine() == Message.StartLine.REG && reply.getStatus() == Message.Status.Successful;
+        return reply.getStartLine().equals(Message.StartLine.REG) && reply.getStatus().equals(Message.Status.Successful);
     }
 
     @Override

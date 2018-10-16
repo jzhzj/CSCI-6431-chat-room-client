@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class TxtHandler extends Handler implements Sendable {
-    Courier courier;
+    private Courier courier;
 
     public TxtHandler(Socket socket) {
         this.socket = socket;

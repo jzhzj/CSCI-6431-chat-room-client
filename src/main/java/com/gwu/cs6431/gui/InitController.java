@@ -19,6 +19,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -37,38 +39,56 @@ public class InitController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        signInButton.setOnAction(event -> {
-            Socket socket = newSocket();
-            SignHandler signHandler = new SignHandler(socket, userIdTxt.getText(), passwd.getText());
-            if (signHandler.execute()) {
-                changeStage();
-            } else {
-                prompt(Alert.AlertType.ERROR, "Failed", signHandler.getServerFeedback(), "Please try again.");
-            }
-            signHandler.close();
-        });
+        signInButton.setOnAction(event -> signInAction());
 
-        signUpButton.setOnAction(event -> {
-            if (!checkAccount(userIdTxt.getText(), passwd.getText())) {
-                prompt(Alert.AlertType.ERROR, "Wrong Format!"
-                        , "You can only use letters and numbers as your User ID and Password."
-                        , "User ID should starts with a letter. The length should between 5 and 10." + System.lineSeparator()
-                                + "The length of Password should be between 6 and 13.");
-                return;
-            }
-            Socket socket = newSocket();
-            RegHandler regHandler = new RegHandler(socket, userIdTxt.getText(), passwd.getText());
-            if (regHandler.execute()) {
-                prompt(Alert.AlertType.INFORMATION, "Success!", regHandler.getServerFeedback()
-                        , "Please remember your User ID and Password :)");
-                changeStage();
-            } else {
-                prompt(Alert.AlertType.ERROR, "Failed", regHandler.getServerFeedback(), "Please try again.");
-            }
-            regHandler.close();
-        });
+        signUpButton.setOnAction(event -> signUpAction());
 
         cancelButton.setOnAction(event -> Platform.exit());
+
+        userIdTxt.textProperty().addListener((observable, oldValue, newValue) -> idLengthLimit(oldValue, newValue));
+
+        passwd.textProperty().addListener((observable, oldValue, newValue) -> pdLengthLimit(oldValue, newValue));
+    }
+
+    private void signInAction() {
+        Socket socket = newSocket();
+        SignHandler signHandler = new SignHandler(socket, userIdTxt.getText(), passwd.getText());
+        if (signHandler.execute()) {
+            changeStage();
+        } else {
+            prompt(Alert.AlertType.ERROR, "Failed", signHandler.getServerFeedback(), "Please try again.");
+        }
+        signHandler.close();
+    }
+
+    private void signUpAction() {
+        if (!checkAccount(userIdTxt.getText(), passwd.getText())) {
+            prompt(Alert.AlertType.ERROR, "Wrong Format!"
+                    , "You can only use letters and numbers as your User ID and Password."
+                    , "User ID should starts with a letter. The length should between 5 and 10." + System.lineSeparator()
+                            + "The length of Password should be between 6 and 13.");
+            return;
+        }
+        Socket socket = newSocket();
+        RegHandler regHandler = new RegHandler(socket, userIdTxt.getText(), passwd.getText());
+        if (regHandler.execute()) {
+            prompt(Alert.AlertType.INFORMATION, "Success!", regHandler.getServerFeedback()
+                    , "Please remember your User ID and Password :)");
+            changeStage();
+        } else {
+            prompt(Alert.AlertType.ERROR, "Failed", regHandler.getServerFeedback(), "Please try again.");
+        }
+        regHandler.close();
+    }
+
+    private void idLengthLimit(String oldValue, String newValue) {
+        if (newValue.length() > 10)
+            userIdTxt.setText(oldValue);
+    }
+
+    private void pdLengthLimit(String oldValue, String newValue) {
+        if (newValue.length() > 13)
+            passwd.setText(oldValue);
     }
 
     private boolean checkAccount(String id, String pd) {
@@ -96,7 +116,8 @@ public class InitController implements Initializable {
     private Socket newSocket() {
         Socket socket;
         try {
-            socket = new Socket(ClientProps.SERVER_ADDRESS, ClientProps.SERVER_PORT);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(ClientProps.SERVER_ADDRESS, ClientProps.SERVER_PORT), ClientProps.TIME_OUT);
         } catch (IOException e) {
             prompt(Alert.AlertType.ERROR, "Connection Error!"
                     , "Can not connect to server", "Please check your network.");
