@@ -24,24 +24,15 @@ public class CourierImpl implements Courier {
      */
     @Override
     public Message execute(Message msg) {
-        StringBuilder sb;
+        String rawStr;
         try {
             out = new PrintWriter(socket.getOutputStream(), true);
             out.print(msg.toString());
-            sb = new StringBuilder();
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String line;
-            int i = 0;
-            while (!(line = in.readLine()).equals(EOM) && i < 50) {
-                sb.append(line);
-                sb.append(NEW_LINE);
-                i++;
-            }
-            sb.append(EOM);
+            rawStr = listen();
         } catch (IOException e) {
             return null;
         }
-        return Message.genMessage(sb.toString());
+        return Message.genMessage(rawStr);
     }
 
     @Override
@@ -53,5 +44,21 @@ public class CourierImpl implements Courier {
     @Override
     public void close() throws IOException{
         socket.close();
+    }
+
+    @Override
+    public String listen() throws IOException {
+        StringBuilder sb;
+        sb = new StringBuilder();
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        String line;
+        int i = 0;
+        while (!(line = in.readLine()).equals(EOM) && i < 50) {
+            sb.append(line);
+            sb.append(NEW_LINE);
+            i++;
+        }
+        sb.append(EOM);
+        return sb.toString();
     }
 }

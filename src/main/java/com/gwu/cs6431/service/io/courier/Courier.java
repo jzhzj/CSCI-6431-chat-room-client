@@ -13,4 +13,6 @@ public interface Courier {
     void send(Message msg) throws IOException;
 
     void close() throws IOException;
+
+    String listen() throws IOException;
 }
