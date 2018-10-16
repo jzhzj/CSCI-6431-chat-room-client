@@ -1,6 +1,5 @@
 package com.gwu.cs6431.gui;
 
-import com.gwu.cs6431.service.constant.ClientProps;
 import com.gwu.cs6431.service.messageHandler.RegHandler;
 import com.gwu.cs6431.service.messageHandler.SignHandler;
 import javafx.application.Platform;
@@ -19,12 +18,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class InitController implements Initializable {
+public class InitController extends Controller implements Initializable {
     @FXML
     private Button signInButton;
     @FXML
@@ -50,6 +48,13 @@ public class InitController implements Initializable {
     }
 
     private void signInAction() {
+//        if (!checkAccount(userIdTxt.getText(), passwd.getText())) {
+//            prompt(Alert.AlertType.ERROR, "Wrong Format!"
+//                    , "You can only use letters and numbers as your User ID and Password."
+//                    , "User ID should starts with a letter. The length should between 5 and 10." + System.lineSeparator()
+//                            + "The length of Password should be between 6 and 13.");
+//            return;
+//        }
 //        Socket socket = newSocket();
         SignHandler signHandler = new SignHandler(new Socket(), userIdTxt.getText(), passwd.getText());
         if (/*signHandler.execute()*/true) {
@@ -118,51 +123,5 @@ public class InitController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private Socket newSocket() {
-        Socket socket;
-        try {
-            socket = new Socket();
-            socket.connect(new InetSocketAddress(ClientProps.SERVER_ADDRESS, ClientProps.SERVER_PORT), ClientProps.TIME_OUT);
-        } catch (IOException e) {
-            prompt(Alert.AlertType.ERROR, "Connection Error!"
-                    , "Can not connect to server", "Please check your network.");
-            Platform.exit();
-            return null;
-        }
-        return socket;
-    }
-
-    public static void prompt(Alert.AlertType alertType, String title, String headerText, String contentText) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.setContentText(contentText);
-        alert.showAndWait();
-    }
-
-    @FXML
-    private void handleMouseEntered(MouseEvent mouseEvent) {
-        Button btn = (Button) mouseEvent.getSource();
-        btn.setEffect(new DropShadow());
-    }
-
-    @FXML
-    private void handleMouseExited(MouseEvent mouseEvent) {
-        Button btn = (Button) mouseEvent.getSource();
-        btn.setEffect(null);
-    }
-
-    @FXML
-    private void handleMousePressed(MouseEvent mouseEvent) {
-        Button btn = (Button) mouseEvent.getSource();
-        btn.setEffect(new InnerShadow());
-    }
-
-    @FXML
-    private void handleMouseReleased(MouseEvent mouseEvent) {
-        Button btn = (Button) mouseEvent.getSource();
-        btn.setEffect(new DropShadow());
     }
 }

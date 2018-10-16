@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable {
+public class MainController extends Controller implements Initializable {
     @FXML
     private Button quitButton;
     @FXML
