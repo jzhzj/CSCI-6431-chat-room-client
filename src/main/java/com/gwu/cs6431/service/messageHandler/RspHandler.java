@@ -20,7 +20,8 @@ public class RspHandler extends Handler implements Executable, Sendable {
         if (msg.getStatus() == null)
             return accept();
         // TODO DO NOT CLOSE socket since it will be use for Session
-        reply = new CourierImpl(socket).execute(msg);
+        courier = new CourierImpl(socket);
+        reply = courier.execute(msg);
         if (reply == null)
             return false;
         return reply.getStartLine().equals(Message.StartLine.RSP) && reply.getStatus().equals(Message.Status.Successful);
@@ -31,7 +32,8 @@ public class RspHandler extends Handler implements Executable, Sendable {
         if (msg.getStatus() == null)
             refuse();
         try {
-            new CourierImpl(socket).send(msg);
+            courier = new CourierImpl(socket);
+            courier.send(msg);
         } catch (IOException e) {
             // TODO
         }
@@ -53,5 +55,10 @@ public class RspHandler extends Handler implements Executable, Sendable {
     public void refuse() {
         msg.setStatus(Message.Status.Refused);
         send();
+    }
+
+    @Override
+    public void close() throws IOException {
+        courier.close();
     }
 }

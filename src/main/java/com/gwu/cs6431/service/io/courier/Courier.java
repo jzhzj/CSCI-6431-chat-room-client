@@ -11,4 +11,6 @@ public interface Courier {
     Message execute(Message msg);
 
     void send(Message msg) throws IOException;
+
+    void close() throws IOException;
 }

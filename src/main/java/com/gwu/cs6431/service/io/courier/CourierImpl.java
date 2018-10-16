@@ -49,4 +49,9 @@ public class CourierImpl implements Courier {
         out = new PrintWriter(socket.getOutputStream(), true);
         out.print(msg.toString());
     }
+
+    @Override
+    public void close() throws IOException{
+        socket.close();
+    }
 }

@@ -20,9 +20,15 @@ public class CloseHandler extends Handler implements Sendable {
     @Override
     public void send() {
         try {
-            new CourierImpl(socket).send(msg);
+            courier = new CourierImpl(socket);
+            courier.send(msg);
         } catch (IOException e) {
             // TODO
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        courier.close();
     }
 }

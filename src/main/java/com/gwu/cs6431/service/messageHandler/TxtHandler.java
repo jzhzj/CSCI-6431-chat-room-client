@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class TxtHandler extends Handler implements Sendable {
-    private Courier courier;
 
     public TxtHandler(Socket socket) {
         this.socket = socket;
@@ -31,5 +30,10 @@ public class TxtHandler extends Handler implements Sendable {
         msg.setTxt(txt);
         send();
         msg = null;
+    }
+
+    @Override
+    public void close() throws IOException {
+        courier.close();
     }
 }

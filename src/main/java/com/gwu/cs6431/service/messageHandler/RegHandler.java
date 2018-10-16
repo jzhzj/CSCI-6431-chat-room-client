@@ -3,6 +3,7 @@ package com.gwu.cs6431.service.messageHandler;
 import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
 
+import java.io.IOException;
 import java.net.Socket;
 
 public class RegHandler extends Handler implements Executable {
@@ -16,7 +17,8 @@ public class RegHandler extends Handler implements Executable {
 
     @Override
     public boolean execute() {
-        reply = new CourierImpl(socket).execute(msg);
+        courier = new CourierImpl(socket);
+        reply = courier.execute(msg);
         if (reply == null)
             return false;
         return reply.getStartLine().equals(Message.StartLine.REG) && reply.getStatus().equals(Message.Status.Successful);
@@ -28,5 +30,10 @@ public class RegHandler extends Handler implements Executable {
             return "Failed";
         else
             return reply.getTxt();
+    }
+
+    @Override
+    public void close() throws IOException {
+        courier.close();
     }
 }

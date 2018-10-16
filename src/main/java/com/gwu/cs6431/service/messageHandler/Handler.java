@@ -1,5 +1,6 @@
 package com.gwu.cs6431.service.messageHandler;
 
+import com.gwu.cs6431.service.io.courier.Courier;
 import com.gwu.cs6431.service.message.Message;
 
 import java.io.IOException;
@@ -10,12 +11,7 @@ abstract class Handler {
     Message msg;
     Message reply;
     Socket socket;
+    Courier courier;
 
-    public void close() {
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    public abstract void close() throws IOException;
 }

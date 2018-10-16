@@ -3,6 +3,7 @@ package com.gwu.cs6431.service.messageHandler;
 import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
@@ -27,5 +28,10 @@ public class InvtHandler extends Handler implements Callable<Boolean> {
         if (reply == null)
             return false;
         return reply.getStartLine().equals(Message.StartLine.RSP) && reply.getStatus().equals(Message.Status.Successful);
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 }
