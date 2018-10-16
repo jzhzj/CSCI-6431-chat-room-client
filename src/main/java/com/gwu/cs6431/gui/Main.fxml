@@ -1,5 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gwu.cs6431.gui.MainController" />
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gwu.cs6431.gui.MainController">
+   <children>
+      <BorderPane prefHeight="600.0" prefWidth="800.0" AnchorPane.leftAnchor="0.0">
+         <left>
+            <AnchorPane prefHeight="600.0" prefWidth="70.0" style="-fx-background-color: #262626;" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="quitButton" layoutX="-1.0" layoutY="573.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #404040;" text="Quit" textFill="#a8a7a7" />
+               </children></AnchorPane>
+         </left>
+         <center>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <left>
+                  <AnchorPane prefHeight="600.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Line endX="100.0" endY="463.0" layoutX="100.0" layoutY="137.0" startX="100.0" startY="-137.0" stroke="#dadada" />
+                        <AnchorPane layoutX="1.0" prefHeight="60.0" prefWidth="200.0">
+                           <children>
+                              <Line endX="91.0" endY="5.0" layoutX="101.0" layoutY="55.0" startX="-102.0" startY="5.0" stroke="#dadada" />
+                              <Button fx:id="inviteButton" layoutX="43.0" layoutY="17.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="115.0" style="-fx-background-color: #DADADA;" text="Invite" />
+                           </children>
+                        </AnchorPane>
+                        <VBox fx:id="vBox" layoutX="1.0" layoutY="61.0" prefHeight="540.0" prefWidth="200.0" />
+                     </children>
+                  </AnchorPane>
+               </left>
+               <center>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <top>
+                        <AnchorPane prefHeight="60.0" prefWidth="529.0" style="-fx-background-color: #EBEBEB;" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label fx:id="nameLabel" layoutX="14.0" layoutY="18.0" prefHeight="25.0" prefWidth="46.0" text="label">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </top>
+                     <center>
+                        <AnchorPane prefHeight="340.0" prefWidth="529.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <TextArea fx:id="dialogArea" layoutY="-1.0" prefHeight="337.0" prefWidth="529.0" style="-fx-background-color: #FFFFFF;" />
+                           </children></AnchorPane>
+                     </center>
+                     <bottom>
+                        <AnchorPane prefHeight="200.0" prefWidth="530.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
+                           <children>
+                              <TextArea fx:id="inputArea" focusTraversable="false" layoutY="-4.0" pickOnBounds="false" prefHeight="205.0" prefWidth="469.0" style="-fx-background-color: #FFFFFF;">
+                                 <cursor>
+                                    <Cursor fx:constant="TEXT" />
+                                 </cursor></TextArea>
+                              <Button fx:id="sendButton" layoutX="474.0" layoutY="166.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="50.0" style="-fx-background-color: #80b0ff;" text="Send">
+                                 <tooltip>
+                                    <Tooltip text="Short cut: Alt+Enter" />
+                                 </tooltip>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                     </bottom>
+                  </BorderPane>
+               </center>
+            </BorderPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

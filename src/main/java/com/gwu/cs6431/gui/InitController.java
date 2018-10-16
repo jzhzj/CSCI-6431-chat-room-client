@@ -19,7 +19,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
@@ -51,14 +50,18 @@ public class InitController implements Initializable {
     }
 
     private void signInAction() {
-        Socket socket = newSocket();
-        SignHandler signHandler = new SignHandler(socket, userIdTxt.getText(), passwd.getText());
-        if (signHandler.execute()) {
+//        Socket socket = newSocket();
+        SignHandler signHandler = new SignHandler(new Socket(), userIdTxt.getText(), passwd.getText());
+        if (/*signHandler.execute()*/true) {
             changeStage();
         } else {
             prompt(Alert.AlertType.ERROR, "Failed", signHandler.getServerFeedback(), "Please try again.");
         }
-        signHandler.close();
+        try {
+            signHandler.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void signUpAction() {
@@ -78,7 +81,11 @@ public class InitController implements Initializable {
         } else {
             prompt(Alert.AlertType.ERROR, "Failed", regHandler.getServerFeedback(), "Please try again.");
         }
-        regHandler.close();
+        try {
+            regHandler.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void idLengthLimit(String oldValue, String newValue) {
