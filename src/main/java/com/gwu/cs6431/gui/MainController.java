@@ -85,8 +85,11 @@ public class MainController extends Controller implements Initializable {
      * send the text in the inputArea to the corresponding session.
      * */
     private void sendBtnAction() {
-        if (curSessionPane != null)
-            ((Session) curSessionPane.getUserData()).send(inputArea.getText());
+        if (curSessionPane != null) {
+            String input = inputArea.getText();
+            inputArea.clear();
+            ((Session) curSessionPane.getUserData()).send(input);
+        }
     }
 
     /**

@@ -70,6 +70,7 @@ public class Session {
     }
 
     public void send(String txt) {
+        appendHistory(sourceUser.getUserID(), txt);
         txtHandler.send(txt);
     }
 
@@ -123,7 +124,7 @@ public class Session {
         sb.append(System.lineSeparator());
         sb.append(System.lineSeparator());
         history = sb.toString();
-        support.firePropertyChange("history", oldValue, history);
+        support.firePropertyChange(sessionID, oldValue, history);
     }
 
     public void addListener(PropertyChangeListener listener) {
