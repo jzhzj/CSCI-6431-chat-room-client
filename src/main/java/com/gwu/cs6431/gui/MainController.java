@@ -3,7 +3,6 @@ package com.gwu.cs6431.gui;
 import com.gwu.cs6431.service.session.Session;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -66,7 +65,7 @@ public class MainController extends Controller implements Initializable {
     private void quitBtnAction() {
         vBox.getChildren().forEach(node -> ((Session) node.getUserData()).close());
         vBox.getChildren().remove(0, vBox.getChildren().size());
-        System.out.println("quit");
+        // TODO close window
     }
 
     /**
@@ -92,6 +91,7 @@ public class MainController extends Controller implements Initializable {
             return;
         changeDialog((Session) curSessionPane.getUserData(), null);
         vBox.getChildren().remove(curSessionPane);
+        ((Session) curSessionPane.getUserData()).close();
         curSessionPane = null;
     }
 

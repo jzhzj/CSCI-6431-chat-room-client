@@ -61,4 +61,12 @@ public class RspHandler extends Handler implements Executable, Sendable {
     public void close() throws IOException {
         courier.close();
     }
+
+    public String getSessionID() {
+        return reply.getSessionID();
+    }
+
+    public String getRemoteUser() {
+        return reply.getSourceUser();
+    }
 }

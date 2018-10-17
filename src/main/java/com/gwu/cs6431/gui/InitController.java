@@ -12,9 +12,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -49,7 +46,7 @@ public class InitController extends Controller implements Initializable {
 
     private void signInAction() {
 //        if (!checkAccount(userIdTxt.getText(), passwd.getText())) {
-//            prompt(Alert.AlertType.ERROR, "Wrong Format!"
+//            promptAlert(Alert.AlertType.ERROR, "Wrong Format!"
 //                    , "You can only use letters and numbers as your User ID and Password."
 //                    , "User ID should starts with a letter. The length should between 5 and 10." + System.lineSeparator()
 //                            + "The length of Password should be between 6 and 13.");
@@ -60,7 +57,7 @@ public class InitController extends Controller implements Initializable {
         if (/*signHandler.execute()*/true) {
             changeStage();
         } else {
-            prompt(Alert.AlertType.ERROR, "Failed", signHandler.getServerFeedback(), "Please try again.");
+            promptAlert(Alert.AlertType.ERROR, "Failed", signHandler.getServerFeedback(), "Please try again.");
         }
         try {
             signHandler.close();
@@ -71,7 +68,7 @@ public class InitController extends Controller implements Initializable {
 
     private void signUpAction() {
         if (!checkAccount(userIdTxt.getText(), passwd.getText())) {
-            prompt(Alert.AlertType.ERROR, "Wrong Format!"
+            promptAlert(Alert.AlertType.ERROR, "Wrong Format!"
                     , "You can only use letters and numbers as your User ID and Password."
                     , "User ID should starts with a letter. The length should between 5 and 10." + System.lineSeparator()
                             + "The length of Password should be between 6 and 13.");
@@ -80,11 +77,11 @@ public class InitController extends Controller implements Initializable {
         Socket socket = newSocket();
         RegHandler regHandler = new RegHandler(socket, userIdTxt.getText(), passwd.getText());
         if (regHandler.execute()) {
-            prompt(Alert.AlertType.INFORMATION, "Success!", regHandler.getServerFeedback()
+            promptAlert(Alert.AlertType.INFORMATION, "Success!", regHandler.getServerFeedback()
                     , "Please remember your User ID and Password :)");
             changeStage();
         } else {
-            prompt(Alert.AlertType.ERROR, "Failed", regHandler.getServerFeedback(), "Please try again.");
+            promptAlert(Alert.AlertType.ERROR, "Failed", regHandler.getServerFeedback(), "Please try again.");
         }
         try {
             regHandler.close();

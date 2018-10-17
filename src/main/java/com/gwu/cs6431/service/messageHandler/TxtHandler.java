@@ -1,6 +1,5 @@
 package com.gwu.cs6431.service.messageHandler;
 
-import com.gwu.cs6431.service.io.courier.Courier;
 import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
 

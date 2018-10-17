@@ -36,13 +36,13 @@ public class CourierImpl implements Courier {
     }
 
     @Override
-    public void send(Message msg) throws IOException{
+    public void send(Message msg) throws IOException {
         out = new PrintWriter(socket.getOutputStream(), true);
         out.print(msg.toString());
     }
 
     @Override
-    public void close() throws IOException{
+    public void close() throws IOException {
         socket.close();
     }
 
@@ -52,11 +52,11 @@ public class CourierImpl implements Courier {
         sb = new StringBuilder();
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String line;
-        int i = 0;
-        while (!(line = in.readLine()).equals(EOM) && i < 50) {
+        int lineNum = 0;
+        while (!(line = in.readLine()).equals(EOM) && lineNum < ClientProps.MAX_MSG_LEN) {
             sb.append(line);
             sb.append(NEW_LINE);
-            i++;
+            lineNum++;
         }
         sb.append(EOM);
         return sb.toString();
