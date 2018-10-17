@@ -3,9 +3,13 @@ package com.gwu.cs6431.gui;
 import com.gwu.cs6431.service.session.Session;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -13,6 +17,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 
 import java.beans.PropertyChangeEvent;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -36,6 +41,8 @@ public class MainController extends Controller implements Initializable {
 
     private AnchorPane curSessionPane;
 
+    private boolean initialized;
+
     // TODO used for test. Remove it later.
     int i = 0;
 
@@ -55,16 +62,23 @@ public class MainController extends Controller implements Initializable {
 
     /**
      * TODO
-     * */
+     */
     private void quitBtnAction() {
+        vBox.getChildren().forEach(node -> ((Session) node.getUserData()).close());
+        vBox.getChildren().remove(0, vBox.getChildren().size());
         System.out.println("quit");
     }
 
     /**
      * TODO Still testing
-     * */
+     */
     private void invtBtnAction() {
-        Session session = new Session("Session" + i, null, "qijiuzhi", "Session" + i);
+        if (!initialized) {
+            KeyCombination kc = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.ALT_ANY);
+            sendButton.getScene().getAccelerators().put(kc, () -> sendBtnAction());
+            initialized = true;
+        }
+        Session session = new Session("Session" + i, new Socket(), "qijiuzhi", "Session" + i);
         session.addListener(evt -> listenerFire(evt));
         createSessionPane(session);
     }
@@ -72,7 +86,7 @@ public class MainController extends Controller implements Initializable {
     /**
      * Defines what happens when the close button is clicked.
      * If the current Session Pane is not null, then this session will be closed.
-     * */
+     */
     private void closeBtnAction() {
         if (curSessionPane == null)
             return;
@@ -83,7 +97,7 @@ public class MainController extends Controller implements Initializable {
 
     /**
      * send the text in the inputArea to the corresponding session.
-     * */
+     */
     private void sendBtnAction() {
         if (curSessionPane != null) {
             String input = inputArea.getText();
@@ -94,7 +108,7 @@ public class MainController extends Controller implements Initializable {
 
     /**
      * creates a new Session pane
-     * */
+     */
     public void createSessionPane(Session session) {
         // TODO set targetUser as the text of the label
         Label name = new Label("Session" + i++);
@@ -141,6 +155,7 @@ public class MainController extends Controller implements Initializable {
             nameLabel.setText(newSession.getTargetUser().getUserID());
             inputArea.setText(newSession.getInputCache());
             dialogArea.setText(newSession.getHistory());
+            dialogArea.appendText("");
         }
     }
 
@@ -149,7 +164,7 @@ public class MainController extends Controller implements Initializable {
      * If the current sessionPane is not equals to the session who gets new text,
      * then nothing happens.
      * If the current SessionPane gets new text, then update the dialogArea.
-     * */
+     */
     private void listenerFire(PropertyChangeEvent evt) {
         // if curSession equals to the session which get new text.
         // Then set dialogArea text

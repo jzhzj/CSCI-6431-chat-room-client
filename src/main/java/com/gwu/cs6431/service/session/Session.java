@@ -123,6 +123,8 @@ public class Session {
         sb.append(System.lineSeparator());
         sb.append(System.lineSeparator());
         sb.append(System.lineSeparator());
+        sb.append("-----------------------");
+        sb.append(System.lineSeparator());
         history = sb.toString();
         support.firePropertyChange(sessionID, oldValue, history);
     }
