@@ -18,6 +18,8 @@ public class Session {
     private TxtHandler txtHandler;
     private CloseHandler closeHandler;
     private String history = "";
+    private String inputCache = "";
+
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     public Session(String sessionID, Socket socket, User sourceUser, User targetUser) {
@@ -49,6 +51,22 @@ public class Session {
 
     public User getTargetUser() {
         return targetUser;
+    }
+
+    public String getHistory() {
+        return history;
+    }
+
+    public String getInputCache() {
+        return inputCache;
+    }
+
+    public void setHistory(String history) {
+        this.history = history;
+    }
+
+    public void setInputCache(String inputCache) {
+        this.inputCache = inputCache;
     }
 
     public void send(String txt) {

@@ -3,6 +3,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -17,7 +18,7 @@
          <left>
             <AnchorPane prefHeight="600.0" prefWidth="70.0" style="-fx-background-color: #262626;" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="quitButton" layoutX="-1.0" layoutY="573.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #404040;" text="Quit" textFill="#a8a7a7" />
+                  <Button fx:id="quitButton" layoutX="-1.0" layoutY="573.0" mnemonicParsing="false" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #404040;" text="Quit" textFill="#a8a7a7" />
                </children></AnchorPane>
          </left>
          <center>
@@ -29,10 +30,18 @@
                         <AnchorPane layoutX="1.0" prefHeight="60.0" prefWidth="200.0">
                            <children>
                               <Line endX="91.0" endY="5.0" layoutX="101.0" layoutY="55.0" startX="-102.0" startY="5.0" stroke="#dadada" />
-                              <Button fx:id="inviteButton" layoutX="43.0" layoutY="17.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="115.0" style="-fx-background-color: #DADADA;" text="Invite" />
+                              <Button fx:id="inviteButton" layoutX="43.0" layoutY="17.0" mnemonicParsing="false" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" prefHeight="27.0" prefWidth="115.0" style="-fx-background-color: #60BB77;" text="Invite" />
                            </children>
                         </AnchorPane>
-                        <VBox fx:id="vBox" layoutX="1.0" layoutY="61.0" prefHeight="540.0" prefWidth="200.0" />
+                        <ScrollPane focusTraversable="false" hbarPolicy="NEVER" layoutX="1.0" layoutY="61.0" prefHeight="540.0" prefWidth="200.0">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox fx:id="vBox" layoutX="-2.0" prefWidth="200.0" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
                      </children>
                   </AnchorPane>
                </left>
@@ -41,7 +50,7 @@
                      <top>
                         <AnchorPane prefHeight="60.0" prefWidth="529.0" style="-fx-background-color: #EBEBEB;" BorderPane.alignment="CENTER">
                            <children>
-                              <Label fx:id="nameLabel" layoutX="14.0" layoutY="18.0" prefHeight="25.0" prefWidth="46.0" text="label">
+                              <Label fx:id="nameLabel" layoutX="14.0" layoutY="18.0" minWidth="0.0" prefHeight="25.0">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -52,7 +61,7 @@
                      <center>
                         <AnchorPane prefHeight="340.0" prefWidth="529.0" BorderPane.alignment="CENTER">
                            <children>
-                              <TextArea fx:id="dialogArea" layoutY="-1.0" prefHeight="337.0" prefWidth="529.0" style="-fx-background-color: #FFFFFF;" />
+                              <TextArea fx:id="dialogArea" editable="false" layoutY="-1.0" prefHeight="337.0" prefWidth="529.0" style="-fx-background-color: #FFFFFF;" />
                            </children></AnchorPane>
                      </center>
                      <bottom>
@@ -62,11 +71,12 @@
                                  <cursor>
                                     <Cursor fx:constant="TEXT" />
                                  </cursor></TextArea>
-                              <Button fx:id="sendButton" layoutX="474.0" layoutY="166.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="50.0" style="-fx-background-color: #80b0ff;" text="Send">
+                              <Button fx:id="sendButton" layoutX="470.0" layoutY="166.0" mnemonicParsing="false" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" prefHeight="29.0" prefWidth="54.0" style="-fx-background-color: #80b0ff;" text="Send">
                                  <tooltip>
                                     <Tooltip text="Short cut: Alt+Enter" />
                                  </tooltip>
                               </Button>
+                              <Button fx:id="closeButton" layoutX="470.0" layoutY="14.0" mnemonicParsing="false" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased" prefHeight="29.0" prefWidth="54.0" style="-fx-background-color: #FF6347;" text="Close" />
                            </children>
                         </AnchorPane>
                      </bottom>
