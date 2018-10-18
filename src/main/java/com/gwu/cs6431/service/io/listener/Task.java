@@ -5,11 +5,16 @@ import com.gwu.cs6431.service.io.SocketFactory;
 import com.gwu.cs6431.service.message.Message;
 import com.gwu.cs6431.service.messageHandler.RspHandler;
 import com.gwu.cs6431.service.session.Session;
+import com.gwu.cs6431.service.session.User;
 import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.net.Socket;
 
+/**
+ * This class is used to handle received messages from Listener.
+ *
+ * */
 public class Task implements Runnable {
     private String messageStr;
     private MainController mainController;
@@ -46,10 +51,10 @@ public class Task implements Runnable {
             // If successfully connect to the server
             if (rspHandler.accept())
                 // Create new Session pane in GUI
-                mainController.createSessionPane(new Session(rspHandler.getSessionID(), socket, getMyUser(msg), rspHandler.getRemoteUser()));
+                mainController.createSessionPane(new Session(rspHandler.getSessionID(), socket, User.getClientUser().getUserID(), rspHandler.getRemoteUser()));
             else {
                 // else, prompt an alert
-                mainController.promptAlert(Alert.AlertType.ERROR, "Connection Error"
+                MainController.promptAlert(Alert.AlertType.ERROR, "Connection Error"
                         , "Failed to establish connection with server."
                         , "Please check your network.");
                 // then close the resource
@@ -69,9 +74,5 @@ public class Task implements Runnable {
                 // TODO
             }
         }
-    }
-
-    private String getMyUser(Message msg) {
-        return msg.getTargetUser();
     }
 }

@@ -2,6 +2,7 @@ package com.gwu.cs6431.gui;
 
 import com.gwu.cs6431.service.messageHandler.RegHandler;
 import com.gwu.cs6431.service.messageHandler.SignHandler;
+import com.gwu.cs6431.service.session.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -53,8 +54,10 @@ public class InitController extends Controller implements Initializable {
 //            return;
 //        }
 //        Socket socket = newSocket();
+        User clientUser = new User(userIdTxt.getText(), passwd.getText());
         SignHandler signHandler = new SignHandler(new Socket(), userIdTxt.getText(), passwd.getText());
         if (/*signHandler.execute()*/true) {
+            User.setClientUser(clientUser);
             changeStage();
         } else {
             promptAlert(Alert.AlertType.ERROR, "Failed", signHandler.getServerFeedback(), "Please try again.");

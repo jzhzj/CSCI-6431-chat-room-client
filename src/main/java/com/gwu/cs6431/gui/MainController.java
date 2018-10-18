@@ -1,11 +1,16 @@
 package com.gwu.cs6431.gui;
 
+import com.gwu.cs6431.service.io.SocketFactory;
+import com.gwu.cs6431.service.io.listener.Listener;
+import com.gwu.cs6431.service.messageHandler.InvtHandler;
 import com.gwu.cs6431.service.session.Session;
+import com.gwu.cs6431.service.session.User;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -18,6 +23,7 @@ import javafx.scene.shape.Line;
 import java.beans.PropertyChangeEvent;
 import java.net.Socket;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MainController extends Controller implements Initializable {
@@ -42,8 +48,6 @@ public class MainController extends Controller implements Initializable {
 
     private boolean initialized;
 
-    // TODO used for test. Remove it later.
-    int i = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -57,10 +61,14 @@ public class MainController extends Controller implements Initializable {
         closeButton.setOnAction(event -> closeBtnAction());
 
         sendButton.setOnAction(event -> sendBtnAction());
+
+        // TODO uncomment this later
+//        Listener.getInstance().setMainController(this);
+//        new Thread(Listener.getInstance()).start();
     }
 
     /**
-     * TODO
+     * TODO close window
      */
     private void quitBtnAction() {
         vBox.getChildren().forEach(node -> ((Session) node.getUserData()).close());
@@ -77,9 +85,25 @@ public class MainController extends Controller implements Initializable {
             sendButton.getScene().getAccelerators().put(kc, () -> sendBtnAction());
             initialized = true;
         }
-        Session session = new Session("Session" + i, new Socket(), "qijiuzhi", "Session" + i);
-        session.addListener(evt -> listenerFire(evt));
-        createSessionPane(session);
+        TextInputDialog invtDialog = new TextInputDialog();
+        invtDialog.setTitle("Send an invitation");
+        invtDialog.setHeaderText("Who do you wanna chat with?");
+        invtDialog.setContentText("User ID: ");
+        Optional<String> result1 = invtDialog.showAndWait();
+        result1.ifPresent(targetUser -> {
+            TextInputDialog saySthDialog = new TextInputDialog();
+            saySthDialog.setTitle("Any thing to say?");
+            saySthDialog.setHeaderText("You can send the reason for the invitation. If not, just press the cancel.");
+            saySthDialog.setContentText("Reason: ");
+            Optional<String> result2 = saySthDialog.showAndWait();
+            if (result2.isPresent()) {
+                // TODO revise socket later
+                new Thread(new InvtHandler(this, null, User.getClientUser().getUserID(), targetUser, result2.get())).start();
+            } else {
+                // TODO revise socket later
+                new Thread(new InvtHandler(this, null, User.getClientUser().getUserID(), targetUser)).start();
+            }
+        });
     }
 
     /**
@@ -110,8 +134,8 @@ public class MainController extends Controller implements Initializable {
      * creates a new Session pane
      */
     public void createSessionPane(Session session) {
-        // TODO set targetUser as the text of the label
-        Label name = new Label("Session" + i++);
+        session.addListener(evt -> listenerFire(evt));
+        Label name = new Label(session.getTargetUser().getUserID());
         name.setLayoutX(15);
         name.setLayoutY(20);
         Line line = new Line(0, 70, 200, 70);
@@ -136,7 +160,6 @@ public class MainController extends Controller implements Initializable {
         curSessionPane = (AnchorPane) event.getSource();
         curSessionPane.setStyle("-fx-background-color: #D2D2D2");
         changeDialog(oldSesson, (Session) curSessionPane.getUserData());
-        System.out.println("Session clicked");
     }
 
     /**
