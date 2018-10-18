@@ -19,6 +19,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 
 import java.beans.PropertyChangeEvent;
 import java.net.Socket;
@@ -96,7 +97,7 @@ public class MainController extends Controller implements Initializable {
             saySthDialog.setHeaderText("You can send the reason for the invitation. If not, just press the cancel.");
             saySthDialog.setContentText("Reason: ");
             Optional<String> result2 = saySthDialog.showAndWait();
-            if (result2.isPresent()) {
+            if (result2.isPresent() && !result2.get().equals("")) {
                 // TODO revise socket later
                 new Thread(new InvtHandler(this, null, User.getClientUser().getUserID(), targetUser, result2.get())).start();
             } else {
@@ -136,6 +137,7 @@ public class MainController extends Controller implements Initializable {
     public void createSessionPane(Session session) {
         session.addListener(evt -> listenerFire(evt));
         Label name = new Label(session.getTargetUser().getUserID());
+        name.setFont(Font.font("Optima", 16));
         name.setLayoutX(15);
         name.setLayoutY(20);
         Line line = new Line(0, 70, 200, 70);
