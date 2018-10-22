@@ -177,7 +177,7 @@ public class Message {
         return txt;
     }
 
-    public static Message genMessage(String message) {
+    public synchronized static Message genMessage(String message) {
         if (message == null)
             return null;
         Message res = new Message();

@@ -28,6 +28,7 @@ public class Listener implements Runnable {
     private int WORKING = 1;
     private int STAT = IDLE;
     private MainController mainController;
+    private Socket socket;
 
     @Override
     public void run() {
@@ -39,11 +40,12 @@ public class Listener implements Runnable {
             return;
         STAT = WORKING;
 
-        try (Socket s = new Socket()) {
-            s.bind(new InetSocketAddress(ClientProps.CLIENT_PORT));
-            s.connect(new InetSocketAddress(ClientProps.SERVER_ADDRESS, ClientProps.SERVER_PORT), ClientProps.TIME_OUT);
+        try {
+            socket = new Socket();
+            socket.bind(new InetSocketAddress(ClientProps.CLIENT_PORT));
+            socket.connect(new InetSocketAddress(ClientProps.SERVER_ADDRESS, ClientProps.SERVER_PORT), ClientProps.TIME_OUT);
             StringBuilder sb = new StringBuilder();
-            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             ExecutorService es = Executors.newCachedThreadPool();
             for (; ; ) {
                 String line;
@@ -58,6 +60,8 @@ public class Listener implements Runnable {
                 sb = new StringBuilder();
             }
         } catch (IOException e) {
+            if (Thread.currentThread().isInterrupted())
+                System.out.println("Listener is interrupted from Blocked I/O");
             // TODO show alert
             Platform.exit();
         }
@@ -65,5 +69,9 @@ public class Listener implements Runnable {
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
+    }
+
+    public void close() throws IOException{
+        socket.close();
     }
 }

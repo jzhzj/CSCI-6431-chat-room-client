@@ -19,6 +19,10 @@ public class User {
         return userID;
     }
 
+    public String getPasswd() {
+        return passwd;
+    }
+
     public static void setClientUser(User user) {
         if (!isSet) {
             clientUser = user;

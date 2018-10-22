@@ -46,6 +46,7 @@ public class InitController extends Controller implements Initializable {
     }
 
     private void signInAction() {
+        // TODO uncomment this later
 //        if (!checkAccount(userIdTxt.getText(), passwd.getText())) {
 //            promptAlert(Alert.AlertType.ERROR, "Wrong Format!"
 //                    , "You can only use letters and numbers as your User ID and Password."
@@ -56,6 +57,7 @@ public class InitController extends Controller implements Initializable {
 //        Socket socket = newSocket();
         User clientUser = new User(userIdTxt.getText(), passwd.getText());
         SignHandler signHandler = new SignHandler(new Socket(), userIdTxt.getText(), passwd.getText());
+        // TODO uncomment this later
         if (/*signHandler.execute()*/true) {
             User.setClientUser(clientUser);
             changeStage();
@@ -104,6 +106,8 @@ public class InitController extends Controller implements Initializable {
     }
 
     private boolean checkAccount(String id, String pd) {
+        if (id == null || pd == null)
+            return false;
         // User ID should starts with a letter, followed by letters or numbers.
         // Length should be between 5 and 10.
         String idRegex = "^[a-zA-Z][\\w]{4,9}";

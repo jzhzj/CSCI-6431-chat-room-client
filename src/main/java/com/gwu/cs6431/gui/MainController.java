@@ -3,8 +3,10 @@ package com.gwu.cs6431.gui;
 import com.gwu.cs6431.service.io.SocketFactory;
 import com.gwu.cs6431.service.io.listener.Listener;
 import com.gwu.cs6431.service.messageHandler.InvtHandler;
+import com.gwu.cs6431.service.messageHandler.QuitHandler;
 import com.gwu.cs6431.service.session.Session;
 import com.gwu.cs6431.service.session.User;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -22,6 +24,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 
 import java.beans.PropertyChangeEvent;
+import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.Optional;
@@ -49,6 +52,8 @@ public class MainController extends Controller implements Initializable {
 
     private boolean initialized;
 
+    private Thread listenerThread;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -65,7 +70,9 @@ public class MainController extends Controller implements Initializable {
 
         // TODO uncomment this later
 //        Listener.getInstance().setMainController(this);
-//        new Thread(Listener.getInstance()).start();
+//        listenerThread = new Thread(Listener.getInstance());
+//        listenerThread.setDaemon(true);
+//        listenerThread.start();
     }
 
     /**
@@ -74,7 +81,24 @@ public class MainController extends Controller implements Initializable {
     private void quitBtnAction() {
         vBox.getChildren().forEach(node -> ((Session) node.getUserData()).close());
         vBox.getChildren().remove(0, vBox.getChildren().size());
+        QuitHandler quitHandler = new QuitHandler(newSocket()
+                , User.getClientUser().getUserID()
+                , User.getClientUser().getPasswd());
+        quitHandler.send();
+        try {
+            quitHandler.close();
+        } catch (IOException e) {
+            // TODO
+        }
+        // TODO uncomment this later
+//        listenerThread.interrupt();
+//        try {
+//            Listener.getInstance().close();
+//        } catch (IOException e) {
+//            // TODO
+//        }
         // TODO close window
+        Platform.exit();
     }
 
     /**
