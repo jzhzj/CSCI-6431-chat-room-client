@@ -1,22 +1,19 @@
 package com.gwu.cs6431.service.messageHandler;
 
 import com.gwu.cs6431.gui.MainController;
-import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
 import com.gwu.cs6431.service.session.Session;
 import com.gwu.cs6431.service.session.User;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
-import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.concurrent.Callable;
 
-public class InvtHandler extends Handler implements Runnable {
+public class InvtAbstractHandler extends AbstractHandler implements Runnable {
     private MainController mainController;
 
-    public InvtHandler(MainController mainController, Socket socket, String sourceUser, String targetUser) {
+    public InvtAbstractHandler(MainController mainController, Socket socket, String sourceUser, String targetUser) {
         this.mainController = mainController;
         this.socket = socket;
         Message msg = new Message(Message.StartLine.INVT);
@@ -25,7 +22,7 @@ public class InvtHandler extends Handler implements Runnable {
         this.msg = msg;
     }
 
-    public InvtHandler(MainController mainController, Socket socket, String sourceUser, String targetUser, String txt) {
+    public InvtAbstractHandler(MainController mainController, Socket socket, String sourceUser, String targetUser, String txt) {
         this(mainController, socket, sourceUser, targetUser);
         msg.setTxt(txt);
     }

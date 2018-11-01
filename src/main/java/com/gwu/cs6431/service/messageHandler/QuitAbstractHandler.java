@@ -6,29 +6,23 @@ import com.gwu.cs6431.service.message.Message;
 import java.io.IOException;
 import java.net.Socket;
 
-public class TxtHandler extends Handler implements Sendable {
-
-    public TxtHandler(Socket socket) {
+public class QuitAbstractHandler extends AbstractHandler implements Sendable {
+    public QuitAbstractHandler(Socket socket, String userID, String passwd) {
         this.socket = socket;
-        courier = new CourierImpl(socket);
+        Message msg = new Message(Message.StartLine.QUIT);
+        msg.setUserID(userID);
+        msg.setPasswd(passwd);
+        this.msg = msg;
     }
 
     @Override
     public void send() {
-        if (msg == null)
-            return;
         try {
+            courier = new CourierImpl(socket);
             courier.send(msg);
         } catch (IOException e) {
             // TODO
         }
-    }
-
-    public void send(String txt) {
-        msg = new Message(Message.StartLine.TXT);
-        msg.setTxt(txt);
-        send();
-        msg = null;
     }
 
     @Override

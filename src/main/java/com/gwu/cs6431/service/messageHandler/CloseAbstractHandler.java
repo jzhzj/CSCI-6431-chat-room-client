@@ -6,12 +6,14 @@ import com.gwu.cs6431.service.message.Message;
 import java.io.IOException;
 import java.net.Socket;
 
-public class QuitHandler extends Handler implements Sendable {
-    public QuitHandler(Socket socket, String userID, String passwd) {
+public class CloseAbstractHandler extends AbstractHandler implements Sendable {
+
+    public CloseAbstractHandler(Socket socket, String sessionID, String sourceUser, String targetUser) {
         this.socket = socket;
-        Message msg = new Message(Message.StartLine.QUIT);
-        msg.setUserID(userID);
-        msg.setPasswd(passwd);
+        Message msg = new Message(Message.StartLine.CLOSE);
+        msg.setSessionID(sessionID);
+        msg.setSourceUser(sourceUser);
+        msg.setTargetUser(targetUser);
         this.msg = msg;
     }
 

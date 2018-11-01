@@ -1,7 +1,7 @@
 package com.gwu.cs6431.gui;
 
-import com.gwu.cs6431.service.messageHandler.RegHandler;
-import com.gwu.cs6431.service.messageHandler.SignHandler;
+import com.gwu.cs6431.service.messageHandler.RegAbstractHandler;
+import com.gwu.cs6431.service.messageHandler.SignAbstractHandler;
 import com.gwu.cs6431.service.session.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -56,7 +56,7 @@ public class InitController extends Controller implements Initializable {
 //        }
 //        Socket socket = newSocket();
         User clientUser = new User(userIdTxt.getText(), passwd.getText());
-        SignHandler signHandler = new SignHandler(new Socket(), userIdTxt.getText(), passwd.getText());
+        SignAbstractHandler signHandler = new SignAbstractHandler(new Socket(), userIdTxt.getText(), passwd.getText());
         // TODO uncomment this later
         if (/*signHandler.execute()*/true) {
             User.setClientUser(clientUser);
@@ -80,7 +80,7 @@ public class InitController extends Controller implements Initializable {
             return;
         }
         Socket socket = newSocket();
-        RegHandler regHandler = new RegHandler(socket, userIdTxt.getText(), passwd.getText());
+        RegAbstractHandler regHandler = new RegAbstractHandler(socket, userIdTxt.getText(), passwd.getText());
         if (regHandler.execute()) {
             promptAlert(Alert.AlertType.INFORMATION, "Success!", regHandler.getServerFeedback()
                     , "Please remember your User ID and Password :)");
@@ -96,18 +96,21 @@ public class InitController extends Controller implements Initializable {
     }
 
     private void idLengthLimit(String oldValue, String newValue) {
-        if (newValue.length() > 10)
+        if (newValue.length() > 10) {
             userIdTxt.setText(oldValue);
+        }
     }
 
     private void pdLengthLimit(String oldValue, String newValue) {
-        if (newValue.length() > 13)
+        if (newValue.length() > 13) {
             passwd.setText(oldValue);
+        }
     }
 
     private boolean checkAccount(String id, String pd) {
-        if (id == null || pd == null)
+        if (id == null || pd == null) {
             return false;
+        }
         // User ID should starts with a letter, followed by letters or numbers.
         // Length should be between 5 and 10.
         String idRegex = "^[a-zA-Z][\\w]{4,9}";

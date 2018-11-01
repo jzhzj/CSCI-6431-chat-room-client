@@ -36,8 +36,9 @@ public class Listener implements Runnable {
     }
 
     private void listen() {
-        if (STAT == WORKING)
+        if (STAT == WORKING) {
             return;
+        }
         STAT = WORKING;
 
         try {
@@ -60,8 +61,9 @@ public class Listener implements Runnable {
                 sb = new StringBuilder();
             }
         } catch (IOException e) {
-            if (Thread.currentThread().isInterrupted())
+            if (Thread.currentThread().isInterrupted()) {
                 System.out.println("Listener is interrupted from Blocked I/O");
+            }
             // TODO show alert
             Platform.exit();
         }
@@ -71,7 +73,7 @@ public class Listener implements Runnable {
         this.mainController = mainController;
     }
 
-    public void close() throws IOException{
+    public void close() throws IOException {
         socket.close();
     }
 }

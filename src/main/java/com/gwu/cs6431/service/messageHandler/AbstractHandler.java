@@ -6,7 +6,7 @@ import com.gwu.cs6431.service.message.Message;
 import java.io.IOException;
 import java.net.Socket;
 
-abstract class Handler {
+abstract class AbstractHandler {
     // Status, UserID, Password, SourceUser, TargetUser, SessionID
     Message msg;
     Message reply;

@@ -25,7 +25,35 @@ public class Message {
     }
 
     private enum Header {
-        Status, UserID, Password, SourceUser, TargetUser, SessionID
+        /**
+         * Status
+         */
+        Status,
+
+        /**
+         * UserID
+         */
+        UserID,
+
+        /**
+         * Password
+         */
+        Password,
+
+        /**
+         * SourceUser
+         */
+        SourceUser,
+
+        /**
+         * TargetUser
+         */
+        TargetUser,
+
+        /**
+         * SessionID
+         */
+        SessionID
     }
 
     private class HeaderField<V> {
@@ -52,14 +80,65 @@ public class Message {
     }
 
     public enum StartLine {
-        REG, SIGN, INVT, RSP, TXT, CLOSE, QUIT
+        /**
+         * Registration
+         */
+        REG,
+
+        /**
+         * Sign in
+         */
+        SIGN,
+
+        /**
+         * Invitation
+         */
+        INVT,
+
+        /**
+         * Response
+         */
+        RSP,
+
+        /**
+         * Text
+         */
+        TXT,
+
+        /**
+         * Close
+         */
+        CLOSE,
+
+        /**
+         * Quit
+         */
+        QUIT
     }
 
     public enum Status {
-        Successful, Failed, Accepted, Refused
+        /**
+         * Successful
+         */
+        Successful,
+
+        /**
+         * Failed
+         */
+        Failed,
+
+        /**
+         * Accepted
+         */
+        Accepted,
+
+        /**
+         * Refused
+         */
+        Refused
     }
 
-    private void setStartLine(String startLine) throws CanNotResolveException{
+    private void setStartLine(String startLine) throws CanNotResolveException {
         for (StartLine sl : StartLine.values()) {
             if (startLine.equalsIgnoreCase(sl.name())) {
                 this.startLine = sl;
@@ -75,7 +154,7 @@ public class Message {
         this.startLine = startLine;
     }
 
-    private void setStatus(String status) throws CanNotResolveException{
+    private void setStatus(String status) throws CanNotResolveException {
         for (Status st : Status.values()) {
             if (status.equalsIgnoreCase(st.name())) {
                 this.status = new HeaderField<>(Header.Status, st);
@@ -115,7 +194,7 @@ public class Message {
         this.txt = txt;
     }
 
-    private void setHeader(String line) throws CanNotResolveException{
+    private void setHeader(String line) throws CanNotResolveException {
         String[] elements = line.split("=");
         if (elements.length != 2) {
             throw new CanNotResolveException("Wrong Header!");
@@ -178,14 +257,15 @@ public class Message {
     }
 
     public synchronized static Message genMessage(String message) {
-        if (message == null)
+        if (message == null) {
             return null;
+        }
         Message res = new Message();
         String[] lines = message.split("\\r\\n");
         // set Start line
         try {
             res.setStartLine(lines[0]);
-        }catch (CanNotResolveException e) {
+        } catch (CanNotResolveException e) {
             return null;
         }
 
@@ -207,8 +287,9 @@ public class Message {
         StringBuilder sb = new StringBuilder();
         for (; i < lines.length && !lines[i].equals(EOM); i++) {
             sb.append(lines[i]);
-            if (lines[i + 1].equals(EOM))
+            if (lines[i + 1].equals(EOM)) {
                 break;
+            }
             sb.append(NEW_LINE);
         }
         res.setTxt(sb.toString());

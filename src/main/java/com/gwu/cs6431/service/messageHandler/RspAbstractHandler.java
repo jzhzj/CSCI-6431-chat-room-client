@@ -6,8 +6,8 @@ import com.gwu.cs6431.service.message.Message;
 import java.io.IOException;
 import java.net.Socket;
 
-public class RspHandler extends Handler implements Executable, Sendable {
-    public RspHandler(Socket socket, String sourceUser, String targetUser) {
+public class RspAbstractHandler extends AbstractHandler implements Executable, Sendable {
+    public RspAbstractHandler(Socket socket, String sourceUser, String targetUser) {
         this.socket = socket;
         Message msg = new Message(Message.StartLine.RSP);
         msg.setSourceUser(sourceUser);
@@ -17,20 +17,23 @@ public class RspHandler extends Handler implements Executable, Sendable {
 
     @Override
     public boolean execute() {
-        if (msg.getStatus() == null)
+        if (msg.getStatus() == null) {
             return accept();
+        }
         // TODO DO NOT CLOSE socket since it will be use for Session
         courier = new CourierImpl(socket);
         reply = courier.execute(msg);
-        if (reply == null)
+        if (reply == null) {
             return false;
+        }
         return reply.getStartLine().equals(Message.StartLine.RSP) && reply.getStatus().equals(Message.Status.Successful);
     }
 
     @Override
     public void send() {
-        if (msg.getStatus() == null)
+        if (msg.getStatus() == null) {
             refuse();
+        }
         try {
             courier = new CourierImpl(socket);
             courier.send(msg);
@@ -41,10 +44,11 @@ public class RspHandler extends Handler implements Executable, Sendable {
 
     @Override
     public String getServerFeedback() {
-        if (reply == null)
+        if (reply == null) {
             return "Failed";
-        else
+        } else {
             return reply.getTxt();
+        }
     }
 
     public boolean accept() {

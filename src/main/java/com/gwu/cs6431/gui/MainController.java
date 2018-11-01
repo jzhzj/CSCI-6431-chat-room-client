@@ -1,9 +1,7 @@
 package com.gwu.cs6431.gui;
 
-import com.gwu.cs6431.service.io.SocketFactory;
-import com.gwu.cs6431.service.io.listener.Listener;
-import com.gwu.cs6431.service.messageHandler.InvtHandler;
-import com.gwu.cs6431.service.messageHandler.QuitHandler;
+import com.gwu.cs6431.service.messageHandler.InvtAbstractHandler;
+import com.gwu.cs6431.service.messageHandler.QuitAbstractHandler;
 import com.gwu.cs6431.service.session.Session;
 import com.gwu.cs6431.service.session.User;
 import javafx.application.Platform;
@@ -25,7 +23,6 @@ import javafx.scene.text.Font;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -81,7 +78,7 @@ public class MainController extends Controller implements Initializable {
     private void quitBtnAction() {
         vBox.getChildren().forEach(node -> ((Session) node.getUserData()).close());
         vBox.getChildren().remove(0, vBox.getChildren().size());
-        QuitHandler quitHandler = new QuitHandler(newSocket()
+        QuitAbstractHandler quitHandler = new QuitAbstractHandler(newSocket()
                 , User.getClientUser().getUserID()
                 , User.getClientUser().getPasswd());
         quitHandler.send();
@@ -123,10 +120,10 @@ public class MainController extends Controller implements Initializable {
             Optional<String> result2 = saySthDialog.showAndWait();
             if (result2.isPresent() && !result2.get().equals("")) {
                 // TODO revise socket later
-                new Thread(new InvtHandler(this, null, User.getClientUser().getUserID(), targetUser, result2.get())).start();
+                new Thread(new InvtAbstractHandler(this, null, User.getClientUser().getUserID(), targetUser, result2.get())).start();
             } else {
                 // TODO revise socket later
-                new Thread(new InvtHandler(this, null, User.getClientUser().getUserID(), targetUser)).start();
+                new Thread(new InvtAbstractHandler(this, null, User.getClientUser().getUserID(), targetUser)).start();
             }
         });
     }
@@ -136,8 +133,9 @@ public class MainController extends Controller implements Initializable {
      * If the current Session Pane is not null, then this session will be closed.
      */
     private void closeBtnAction() {
-        if (curSessionPane == null)
+        if (curSessionPane == null) {
             return;
+        }
         changeDialog((Session) curSessionPane.getUserData(), null);
         vBox.getChildren().remove(curSessionPane);
         ((Session) curSessionPane.getUserData()).close();
@@ -193,14 +191,16 @@ public class MainController extends Controller implements Initializable {
      */
     private void changeDialog(Session oldSession, Session newSession) {
         if (newSession == null) {
-            if (oldSession != null)
+            if (oldSession != null) {
                 oldSession.setInputCache(inputArea.getText());
+            }
             nameLabel.setText("");
             inputArea.setText("");
             dialogArea.setText("");
         } else {
-            if (oldSession != null)
+            if (oldSession != null) {
                 oldSession.setInputCache(inputArea.getText());
+            }
             nameLabel.setText(newSession.getTargetUser().getUserID());
             inputArea.setText(newSession.getInputCache());
             dialogArea.setText(newSession.getHistory());

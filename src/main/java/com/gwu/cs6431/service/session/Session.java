@@ -2,8 +2,8 @@ package com.gwu.cs6431.service.session;
 
 import com.gwu.cs6431.service.io.courier.CourierImpl;
 import com.gwu.cs6431.service.message.Message;
-import com.gwu.cs6431.service.messageHandler.CloseHandler;
-import com.gwu.cs6431.service.messageHandler.TxtHandler;
+import com.gwu.cs6431.service.messageHandler.CloseAbstractHandler;
+import com.gwu.cs6431.service.messageHandler.TxtAbstractHandler;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -15,8 +15,8 @@ public class Session {
     private Socket socket;
     private User sourceUser;
     private User targetUser;
-    private TxtHandler txtHandler;
-    private CloseHandler closeHandler;
+    private TxtAbstractHandler txtHandler;
+    private CloseAbstractHandler closeHandler;
     private String history = "";
     private String inputCache = "";
 
@@ -27,8 +27,8 @@ public class Session {
         this.socket = socket;
         this.sourceUser = sourceUser;
         this.targetUser = targetUser;
-        this.txtHandler = new TxtHandler(socket);
-        this.closeHandler = new CloseHandler(this.socket, this.sessionID
+        this.txtHandler = new TxtAbstractHandler(socket);
+        this.closeHandler = new CloseAbstractHandler(this.socket, this.sessionID
                 , this.sourceUser.getUserID(), this.targetUser.getUserID());
         createListenTask();
     }
@@ -93,21 +93,21 @@ public class Session {
 
     private void handleMsg(String rawStr) {
         Message msg = Message.genMessage(rawStr);
-        if (msg == null)
+        if (msg == null) {
             return;
+        }
         if (Message.StartLine.TXT.equals(msg.getStartLine())) {
             if (sessionID.equals(msg.getSessionID())
                     && targetUser.getUserID().equals(msg.getSourceUser())
-                    && sourceUser.getUserID().equals(msg.getTargetUser()))
-
+                    && sourceUser.getUserID().equals(msg.getTargetUser())) {
                 appendHistory(targetUser.getUserID(), msg.getTxt());
-
+            }
         } else if (Message.StartLine.CLOSE.equals(msg.getStartLine())) {
             if (sessionID.equals(msg.getSessionID())
                     && targetUser.getUserID().equals(msg.getSourceUser())
-                    && sourceUser.getUserID().equals(msg.getTargetUser()))
-
+                    && sourceUser.getUserID().equals(msg.getTargetUser())) {
                 closeResource();
+            }
         }
     }
 

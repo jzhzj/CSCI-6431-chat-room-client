@@ -6,8 +6,8 @@ import com.gwu.cs6431.service.message.Message;
 import java.io.IOException;
 import java.net.Socket;
 
-public class SignHandler extends Handler implements Executable {
-    public SignHandler(Socket socket, String userID, String passwd) {
+public class SignAbstractHandler extends AbstractHandler implements Executable {
+    public SignAbstractHandler(Socket socket, String userID, String passwd) {
         this.socket = socket;
         Message msg = new Message(Message.StartLine.SIGN);
         msg.setUserID(userID);
@@ -20,17 +20,19 @@ public class SignHandler extends Handler implements Executable {
         System.out.println(msg);
         courier = new CourierImpl(socket);
         reply = courier.execute(msg);
-        if (reply == null)
+        if (reply == null) {
             return false;
+        }
         return reply.getStartLine().equals(Message.StartLine.SIGN) && reply.getStatus().equals(Message.Status.Successful);
     }
 
     @Override
     public String getServerFeedback() {
-        if (reply == null)
+        if (reply == null) {
             return "Failed";
-        else
+        } else {
             return reply.getTxt();
+        }
     }
 
     @Override

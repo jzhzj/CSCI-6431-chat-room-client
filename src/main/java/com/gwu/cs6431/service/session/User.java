@@ -31,8 +31,9 @@ public class User {
     }
 
     public static User getClientUser() {
-        if (isSet)
+        if (isSet) {
             return clientUser;
+        }
         return null;
     }
 }
