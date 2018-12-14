@@ -1,5 +1,6 @@
 package com.gwu.cs6431.client.gui;
 
+import com.gwu.cs6431.client.service.handler.AbstractHandler;
 import com.gwu.cs6431.client.service.handler.RegHandler;
 import com.gwu.cs6431.client.service.handler.SignHandler;
 import com.gwu.cs6431.client.service.session.User;
@@ -41,6 +42,8 @@ public class InitController extends Controller implements Initializable {
         userIdTxt.textProperty().addListener((observable, oldValue, newValue) -> idLengthLimit(oldValue, newValue));
 
         passwd.textProperty().addListener((observable, oldValue, newValue) -> pdLengthLimit(oldValue, newValue));
+
+        AbstractHandler.setInitController(this);
     }
 
     private void signInAction() {
