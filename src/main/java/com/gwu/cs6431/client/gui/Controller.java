@@ -1,6 +1,6 @@
-package com.gwu.cs6431.gui;
+package com.gwu.cs6431.client.gui;
 
-import com.gwu.cs6431.service.io.SocketFactory;
+import com.gwu.cs6431.client.service.io.SocketFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -13,8 +13,8 @@ import java.net.Socket;
 import java.util.Optional;
 
 public class Controller {
-    Socket newSocket() {
-        return SocketFactory.newSocket();
+    Socket getConstSocket() {
+        return SocketFactory.getConstSocket();
     }
 
     public static void promptAlert(Alert.AlertType alertType, String title, String headerText, String contentText) {
