@@ -1,7 +1,9 @@
-package com.gwu.cs6431.service.message;
+package com.gwu.cs6431.client.service.message;
 
-import com.gwu.cs6431.service.constant.ClientProps;
-import com.gwu.cs6431.service.exception.CanNotResolveException;
+import com.gwu.cs6431.client.service.constant.ClientProps;
+import com.gwu.cs6431.client.service.exception.CanNotResolveException;
+import com.gwu.cs6431.client.service.session.Session;
+import com.gwu.cs6431.client.service.session.User;
 
 public class Message {
     private final static String EOM = ClientProps.EOM;
@@ -182,15 +184,30 @@ public class Message {
         this.sourceUser = new HeaderField<>(Header.SourceUser, sourceUser);
     }
 
+    public void setSourceUser(User sourceUser) {
+        setSourceUser(sourceUser.getUserID());
+    }
+
     public void setTargetUser(String targetUser) {
         this.targetUser = new HeaderField<>(Header.TargetUser, targetUser);
+    }
+
+    public void setTargetUser(User targetUser) {
+        setTargetUser(targetUser.getUserID());
     }
 
     public void setSessionID(String sessionID) {
         this.sessionID = new HeaderField<>(Header.SessionID, sessionID);
     }
 
+    public void setSessionID(Session session) {
+        setSessionID(session.getSessionID());
+    }
+
     public void setTxt(String txt) {
+        if (txt == null || "".equals(txt)) {
+            return;
+        }
         this.txt = txt;
     }
 
@@ -272,7 +289,7 @@ public class Message {
         // set Header fields
         int i = 1;
         try {
-            for (; i < lines.length && !lines[i].equals(""); i++) {
+            for (; i < lines.length && !"".equals(lines[i]); i++) {
                 res.setHeader(lines[i]);
             }
 
@@ -294,6 +311,24 @@ public class Message {
         }
         res.setTxt(sb.toString());
         return res;
+    }
+
+    public boolean readyToSend() {
+        switch (startLine) {
+            case TXT:
+            case CLOSE:
+                return this.sourceUser != null && this.targetUser != null && this.sessionID != null;
+            case RSP:
+                return this.sourceUser != null && this.targetUser != null && this.status != null;
+            case INVT:
+                return this.sourceUser != null && this.targetUser != null;
+            case REG:
+            case SIGN:
+            case QUIT:
+                return this.userID != null && this.passwd != null;
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -329,11 +364,12 @@ public class Message {
             sb.append(NEW_LINE);
         }
         sb.append(NEW_LINE);
-        if (txt != null && !txt.equals("")) {
+        if (txt != null && !"".equals(txt)) {
             sb.append(txt);
             sb.append(NEW_LINE);
         }
         sb.append(EOM);
+        sb.append(NEW_LINE);
         return sb.toString();
     }
 }
