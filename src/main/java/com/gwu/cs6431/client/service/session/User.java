@@ -1,4 +1,4 @@
-package com.gwu.cs6431.service.session;
+package com.gwu.cs6431.client.service.session;
 
 public class User {
     private String userID;
@@ -31,9 +31,6 @@ public class User {
     }
 
     public static User getClientUser() {
-        if (isSet) {
             return clientUser;
-        }
-        return null;
     }
 }
