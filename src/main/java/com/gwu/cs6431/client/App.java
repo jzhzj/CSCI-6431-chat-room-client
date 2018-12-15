@@ -1,4 +1,4 @@
-package com.gwu.cs6431;
+package com.gwu.cs6431.client;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +11,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/gwu/cs6431/gui/Init.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/com/gwu/cs6431/client/client/gui/Init.fxml"));
         Stage stage = new Stage(StageStyle.UNIFIED);
         stage.setResizable(false);
         stage.setScene(new Scene(root));
