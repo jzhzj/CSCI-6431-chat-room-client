@@ -5,6 +5,7 @@ import com.gwu.cs6431.client.gui.MainController;
 import com.gwu.cs6431.client.service.exception.MessageNotCompletedException;
 import com.gwu.cs6431.client.service.io.courier.CourierImpl;
 import com.gwu.cs6431.client.service.message.Message;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
 import java.io.IOException;
@@ -26,18 +27,17 @@ public class RegHandler extends AbstractHandler implements InitMsgHandler, Incom
         this.msg = msg;
     }
 
-    RegHandler(Message msg) {
-        this.msg = msg;
+    RegHandler() {
     }
 
     @Override
     public void receive(Message msg) {
         switch (msg.getStatus()) {
             case Successful:
-                InitController.promptAlert(Alert.AlertType.CONFIRMATION, "Succeed", msg.getTxt(), "Please don't forget your user Id and password");
+                Platform.runLater(() -> InitController.promptAlert(Alert.AlertType.CONFIRMATION, "Succeed", msg.getTxt(), "Please don't forget your user Id and password"));
                 break;
             case Failed:
-                InitController.promptAlert(Alert.AlertType.ERROR, "Failed", msg.getTxt(), "Please try again.");
+                Platform.runLater(() -> InitController.promptAlert(Alert.AlertType.ERROR, "Failed", msg.getTxt(), "Please try again."));
                 break;
             default:
         }
@@ -45,6 +45,9 @@ public class RegHandler extends AbstractHandler implements InitMsgHandler, Incom
 
     @Override
     public void send() {
+        if (msg == null) {
+            return;
+        }
         try {
             courier.send(msg);
         } catch (IOException | MessageNotCompletedException e) {
