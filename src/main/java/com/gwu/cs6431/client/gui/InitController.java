@@ -19,6 +19,11 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controller that controls the initial stage.
+ *
+ * @author qijiuzhi
+ */
 public class InitController extends Controller implements Initializable {
     @FXML
     private Button signInButton;

@@ -1,16 +1,14 @@
-package com.gwu.cs6431.gui;
+package com.gwu.cs6431.client.gui;
 
-import com.gwu.cs6431.service.messageHandler.InvtAbstractHandler;
-import com.gwu.cs6431.service.messageHandler.QuitAbstractHandler;
-import com.gwu.cs6431.service.session.Session;
-import com.gwu.cs6431.service.session.User;
+import com.gwu.cs6431.client.service.handler.*;
+import com.gwu.cs6431.client.service.io.SocketFactory;
+import com.gwu.cs6431.client.service.message.Message;
+import com.gwu.cs6431.client.service.session.Session;
+import com.gwu.cs6431.client.service.session.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -22,11 +20,15 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 
 import java.beans.PropertyChangeEvent;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Controller that controls the main stage.
+ *
+ * @author qijiuzhi
+ */
 public class MainController extends Controller implements Initializable {
     @FXML
     private Button quitButton;
@@ -49,8 +51,6 @@ public class MainController extends Controller implements Initializable {
 
     private boolean initialized;
 
-    private Thread listenerThread;
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -65,48 +65,35 @@ public class MainController extends Controller implements Initializable {
 
         sendButton.setOnAction(event -> sendBtnAction());
 
-        // TODO uncomment this later
-//        Listener.getInstance().setMainController(this);
-//        listenerThread = new Thread(Listener.getInstance());
-//        listenerThread.setDaemon(true);
-//        listenerThread.start();
+        AbstractHandler.setMainController(this);
     }
 
-    /**
-     * TODO close window
-     */
+
     private void quitBtnAction() {
         vBox.getChildren().forEach(node -> ((Session) node.getUserData()).close());
         vBox.getChildren().remove(0, vBox.getChildren().size());
-        QuitAbstractHandler quitHandler = new QuitAbstractHandler(newSocket()
+
+        QuitHandler quitHandler = new QuitHandler(getConstSocket()
                 , User.getClientUser().getUserID()
                 , User.getClientUser().getPasswd());
         quitHandler.send();
-        try {
-            quitHandler.close();
-        } catch (IOException e) {
-            // TODO
-        }
-        // TODO uncomment this later
-//        listenerThread.interrupt();
-//        try {
-//            Listener.getInstance().close();
-//        } catch (IOException e) {
-//            // TODO
-//        }
-        // TODO close window
+
+        // close the socket
+        SocketFactory.close();
+        //  close window
         Platform.exit();
     }
 
-    /**
-     * TODO Still testing
-     */
+
     private void invtBtnAction() {
+        // This is used to setup the shortcuts. Shortcuts can only be set once.
         if (!initialized) {
             KeyCombination kc = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.ALT_ANY);
-            sendButton.getScene().getAccelerators().put(kc, () -> sendBtnAction());
+            sendButton.getScene().getAccelerators().put(kc, this::sendBtnAction);
             initialized = true;
         }
+
+
         TextInputDialog invtDialog = new TextInputDialog();
         invtDialog.setTitle("Send an invitation");
         invtDialog.setHeaderText("Who do you wanna chat with?");
@@ -118,14 +105,22 @@ public class MainController extends Controller implements Initializable {
             saySthDialog.setHeaderText("You can send the reason for the invitation. If not, just press the cancel.");
             saySthDialog.setContentText("Reason: ");
             Optional<String> result2 = saySthDialog.showAndWait();
-            if (result2.isPresent() && !result2.get().equals("")) {
-                // TODO revise socket later
-                new Thread(new InvtAbstractHandler(this, null, User.getClientUser().getUserID(), targetUser, result2.get())).start();
+            if (result2.isPresent() && !"".equals(result2.get())) {
+                new InvtHandler(SocketFactory.getConstSocket(), User.getClientUser().getUserID(), targetUser, result2.get()).send();
             } else {
-                // TODO revise socket later
-                new Thread(new InvtAbstractHandler(this, null, User.getClientUser().getUserID(), targetUser)).start();
+                new InvtHandler(SocketFactory.getConstSocket(), User.getClientUser().getUserID(), targetUser);
             }
         });
+    }
+
+    public void incomingInvitation(Message msg) {
+        String txt = msg.getTxt() == null ? null : msg.getSourceUser() + ": " + msg.getTxt();
+        boolean accepted = MainController.promptINVT(Alert.AlertType.CONFIRMATION, "New Invitation", "You have an invitation from: " + msg.getSourceUser(), txt);
+        if (accepted) {
+            new RspHandler(SocketFactory.getConstSocket(), msg.getSourceUser(), msg.getTargetUser()).accept();
+        } else {
+            new RspHandler(SocketFactory.getConstSocket(), msg.getSourceUser(), msg.getTargetUser()).refuse();
+        }
     }
 
     /**
@@ -136,9 +131,21 @@ public class MainController extends Controller implements Initializable {
         if (curSessionPane == null) {
             return;
         }
-        changeDialog((Session) curSessionPane.getUserData(), null);
+
+        // get the session
+        Session curSession = (Session) curSessionPane.getUserData();
+        // change the dialog to null
+        changeDialog(curSession, null);
+        // remove the session pane
         vBox.getChildren().remove(curSessionPane);
-        ((Session) curSessionPane.getUserData()).close();
+        // send close message to target user
+        new CloseHandler(SocketFactory.getConstSocket(),
+                curSession.getSessionID(),
+                curSession.getSourceUser().getUserID(),
+                curSession.getSourceUser().getUserID()).send();
+        // close the session
+        curSession.close();
+
         curSessionPane = null;
     }
 
@@ -175,15 +182,15 @@ public class MainController extends Controller implements Initializable {
      * handles when a session pane is clicked
      */
     private void sessionPaneOnMouseClicked(MouseEvent event) {
-        Session oldSesson = null;
+        Session oldSession = null;
         if (curSessionPane != null) {
             curSessionPane.setStyle("-fx-background-color: #F4F4F4");
-            oldSesson = (Session) curSessionPane.getUserData();
+            oldSession = (Session) curSessionPane.getUserData();
 
         }
         curSessionPane = (AnchorPane) event.getSource();
         curSessionPane.setStyle("-fx-background-color: #D2D2D2");
-        changeDialog(oldSesson, (Session) curSessionPane.getUserData());
+        changeDialog(oldSession, (Session) curSessionPane.getUserData());
     }
 
     /**
@@ -221,5 +228,31 @@ public class MainController extends Controller implements Initializable {
             dialogArea.setText((String) evt.getNewValue());
             dialogArea.appendText("");
         }
+    }
+
+    public void closeByOtherUser(String sessionId) {
+        AnchorPane sessionPane;
+
+        // iterate the vBox to get the session that equals to Param session
+        for (int i = 0; i < vBox.getChildren().size(); i++) {
+
+            // get sessionPane by index
+            sessionPane = (AnchorPane) vBox.getChildren().get(i);
+
+            // get session of the sessionPane
+            Session tmpSession = (Session) sessionPane.getUserData();
+
+            // if the current sessionId equals to the Param sessionId
+            if (tmpSession.getSessionID().equals(sessionId)) {
+                // if this sessionPane equals to the curSessionPane
+                if (curSessionPane.equals(sessionPane)) {
+                    // set the dialog to null
+                    changeDialog(tmpSession, null);
+                }
+                // remove the session pane
+                vBox.getChildren().remove(sessionPane);
+            }
+        }
+
     }
 }

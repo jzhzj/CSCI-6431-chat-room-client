@@ -12,6 +12,12 @@ import javafx.scene.input.MouseEvent;
 import java.net.Socket;
 import java.util.Optional;
 
+/**
+ * Super class of InitController and MainController.
+ * This class has methods that can be inherited by both controllers.
+ *
+ * @author qijiuzhi
+ */
 public class Controller {
     Socket getConstSocket() {
         return SocketFactory.getConstSocket();
