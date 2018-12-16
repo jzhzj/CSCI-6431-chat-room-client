@@ -13,6 +13,6 @@ The functions of the system:
 - Initiate an invitation to another client, and
 - Chat  
 ## Details of my protocol
-[Chat Room Protocol]()
+[Chat Room Protocol](https://github.com/jzhzj/CSCI-6431-chat-room-client/blob/master/Chat_Room_Protocol.pdf)
 ## Contacts  
 - [Jiuzhi QI](mailto:qijiuzhi@gwu.edu)
