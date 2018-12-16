@@ -6,7 +6,9 @@ import com.gwu.cs6431.client.service.handler.TxtHandler;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Used to represent the session shared between source user and target user.
@@ -123,5 +125,27 @@ public class Session {
 
     public void close() {
         removeSession(sessionID);
+    }
+
+    public static Set<Session> getAllSessions() {
+        Set<Session> set = new HashSet<>();
+        for (String sessionId : sessionMap.keySet()) {
+            set.add(sessionMap.get(sessionId));
+        }
+        return set;
+    }
+
+    @Override
+    public int hashCode() {
+        return getSourceUser().hashCode() + getTargetUser().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Session) {
+            Session anotherSession = (Session) obj;
+            return anotherSession.getSessionID().equals(this.getSessionID());
+        }
+        return false;
     }
 }

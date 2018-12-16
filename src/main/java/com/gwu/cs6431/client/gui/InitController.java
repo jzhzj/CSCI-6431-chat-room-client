@@ -3,6 +3,7 @@ package com.gwu.cs6431.client.gui;
 import com.gwu.cs6431.client.service.handler.AbstractHandler;
 import com.gwu.cs6431.client.service.handler.RegHandler;
 import com.gwu.cs6431.client.service.handler.SignHandler;
+import com.gwu.cs6431.client.service.io.listener.Listener;
 import com.gwu.cs6431.client.service.session.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -14,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -49,6 +51,10 @@ public class InitController extends Controller implements Initializable {
         passwd.textProperty().addListener((observable, oldValue, newValue) -> pdLengthLimit(oldValue, newValue));
 
         AbstractHandler.setInitController(this);
+
+        Thread listenerThread = new Thread(Listener.getInstance());
+        listenerThread.setDaemon(true);
+        listenerThread.start();
     }
 
     private void signInAction() {

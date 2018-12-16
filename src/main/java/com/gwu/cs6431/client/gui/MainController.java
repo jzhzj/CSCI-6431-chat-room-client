@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.beans.PropertyChangeEvent;
 import java.net.URL;
@@ -46,6 +47,8 @@ public class MainController extends Controller implements Initializable {
     private TextArea dialogArea;
     @FXML
     private TextArea inputArea;
+    @FXML
+    private Text nameTxt;
 
     private AnchorPane curSessionPane;
 
@@ -54,6 +57,8 @@ public class MainController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        nameTxt.setText(User.getClientUser().getUserID());
+
         quitButton.setOnAction(event -> quitBtnAction());
 
         inviteButton.setOnAction(event -> invtBtnAction());
@@ -70,9 +75,6 @@ public class MainController extends Controller implements Initializable {
 
 
     private void quitBtnAction() {
-        vBox.getChildren().forEach(node -> ((Session) node.getUserData()).close());
-        vBox.getChildren().remove(0, vBox.getChildren().size());
-
         QuitHandler quitHandler = new QuitHandler(getConstSocket()
                 , User.getClientUser().getUserID()
                 , User.getClientUser().getPasswd());
@@ -108,7 +110,7 @@ public class MainController extends Controller implements Initializable {
             if (result2.isPresent() && !"".equals(result2.get())) {
                 new InvtHandler(SocketFactory.getConstSocket(), User.getClientUser().getUserID(), targetUser, result2.get()).send();
             } else {
-                new InvtHandler(SocketFactory.getConstSocket(), User.getClientUser().getUserID(), targetUser);
+                new InvtHandler(SocketFactory.getConstSocket(), User.getClientUser().getUserID(), targetUser).send();
             }
         });
     }
@@ -142,7 +144,7 @@ public class MainController extends Controller implements Initializable {
         new CloseHandler(SocketFactory.getConstSocket(),
                 curSession.getSessionID(),
                 curSession.getSourceUser().getUserID(),
-                curSession.getSourceUser().getUserID()).send();
+                curSession.getTargetUser().getUserID()).send();
         // close the session
         curSession.close();
 
@@ -164,7 +166,7 @@ public class MainController extends Controller implements Initializable {
      * creates a new Session pane
      */
     public void createSessionPane(Session session) {
-        session.addListener(evt -> listenerFire(evt));
+        session.addListener(this::listenerFire);
         Label name = new Label(session.getTargetUser().getUserID());
         name.setFont(Font.font("Optima", 16));
         name.setLayoutX(15);
@@ -174,8 +176,10 @@ public class MainController extends Controller implements Initializable {
         AnchorPane ap = new AnchorPane(name, line);
         ap.setUserData(session);
         ap.setPrefHeight(70);
-        ap.setOnMouseClicked(event -> sessionPaneOnMouseClicked(event));
+        ap.setOnMouseClicked(this::sessionPaneOnMouseClicked);
         vBox.getChildren().add(ap);
+        changeDialog(null, session);
+        curSessionPane = ap;
     }
 
     /**
@@ -253,6 +257,5 @@ public class MainController extends Controller implements Initializable {
                 vBox.getChildren().remove(sessionPane);
             }
         }
-
     }
 }
