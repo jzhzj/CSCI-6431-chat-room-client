@@ -28,8 +28,7 @@ public class SocketFactory {
                 socket.connect(new InetSocketAddress(getServerAddr(), ClientProps.SERVER_PORT), ClientProps.TIME_OUT);
             } catch (IOException e) {
                 Platform.runLater(() -> MainController.promptAlert(Alert.AlertType.ERROR, "Connection Error!",
-                        "Can not connect to server", "Please check your network."));
-                Platform.exit();
+                        "Can not connect to server", "Please check your network. Or you may want to check the config file."));
                 return null;
             }
         }

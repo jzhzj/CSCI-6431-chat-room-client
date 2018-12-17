@@ -67,7 +67,7 @@ public class Listener implements Runnable {
             MainController.promptAlert(Alert.AlertType.ERROR,
                     "Connection Error",
                     "Cannot connet to the server.",
-                    "Please check your network settings");
+                    "Please check your network settings. Or you may want to check the config file.");
             Platform.exit();
         }
     }
